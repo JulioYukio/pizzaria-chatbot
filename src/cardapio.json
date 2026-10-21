@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nome": "Pizza Calabresa",
+    "preco": 4500,
+    "estoque": 8
+  },
+  {
+    "id": 2,
+    "nome": "Pizza Mussarela",
+    "preco": 4200,
+    "estoque": 7
+  },
+  {
+    "id": 3,
+    "nome": "Pizza Portuguesa",
+    "preco": 4900,
+    "estoque": 5
+  },
+  {
+    "id": 4,
+    "nome": "Refrigerante 2L",
+    "preco": 1200,
+    "estoque": 10
+  }
+]
