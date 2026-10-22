@@ -20,7 +20,7 @@ const server=http.createServer(async(req,res)=>{
    if(typeof d.cliente!=="string"||!/^[a-zA-Z0-9_-]{1,50}$/.test(d.cliente)||typeof d.mensagem!=="string"||d.mensagem.length>1000)return json(res,400,{erro:"Mensagem inválida"});
    return json(res,200,{resposta:bot.falar(d.cliente,d.mensagem)});
   }
-  if(req.method==="POST"&&url.pathname==="/api/reiniciar"){bot.produtos=structuredClone(require("./cardapio.json"));bot.sessoes.clear();bot.pedidos=[];bot.sequencia=1;return json(res,200,{ok:true})}
+  if(req.method==="POST"&&url.pathname==="/api/reiniciar"){bot.reiniciar();return json(res,200,{ok:true})}
   return json(res,404,{erro:"Rota não encontrada"});
  }catch(e){console.error(e);return json(res,500,{erro:"Erro interno"})}
 });
