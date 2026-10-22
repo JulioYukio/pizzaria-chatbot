@@ -1,43 +1,45 @@
-
 # Pizzaria Chatbot
 
-Protótipo de chatbot para atendimento automatizado
-de uma pizzaria pelo WhatsApp.
+Protótipo acadêmico, executado localmente, sem custos de implantação e sem vendas reais.
 
-## Sobre o projeto
+## Funcionalidades
 
-Projeto de extensão universitária desenvolvido
-para demonstrar a viabilidade de automatizar
-o atendimento de uma pizzaria.
+- Cardápio fornecido pela pizzaria: **77 pizzas** (salgadas, especiais, light e doces) e **18 bebidas**.
+- Ingredientes e preços específicos dos tamanhos **Broto, Média, Grande e Família**.
+- Chatbot com seleção de produto, tamanho, quantidade, carrinho, confirmação fictícia e consulta de pedido.
+- Estoque **simulado** (10 unidades de cada produto), não vinculado ao estoque real.
+- Painel web demonstrativo para acompanhar pedidos originados no próprio simulador.
+- Conexão opcional com WhatsApp Web não oficial (processo separado).
 
-## Objetivo
+## Início rápido
 
-Permitir que clientes simulem pedidos de pizzas
-por meio de uma conversa automatizada.
+Instale Node.js 20 ou superior.
 
-## Funcionalidades previstas
+```sh
+git clone https://github.com/JulioYukio/pizzaria-chatbot.git
+cd pizzaria-chatbot
+npm start
+```
 
-- Atendimento automático
-- Visualização do cardápio
-- Seleção de pizzas e bebidas
-- Consulta de disponibilidade
-- Cálculo do valor total
-- Confirmação simulada do pedido
-- Integração com o MVC anterior, se viável
+Abra **http://127.0.0.1:3000**. Execute `npm test` para testar o motor de pedidos.
 
-## Tecnologias
+## Teste opcional com WhatsApp
 
-- Node.js
-- JavaScript
-- whatsapp-web.js
-- Git e GitHub
-- JSON para dados simulados
+```sh
+npm install whatsapp-web.js qrcode-terminal
+npm run whatsapp
+```
 
-## Condições
+Abra o WhatsApp de uma **conta de testes**, vá até **Dispositivos conectados > Conectar dispositivo** e leia o QR Code no terminal. Em outro número autorizado, envie `oi`. O bot não inicia conversas nem envia mensagens em massa.
 
-Projeto demonstrativo, sem custos de implantação.
-Não realiza vendas ou pagamentos reais.
+**Aviso:** `whatsapp-web.js` é uma biblioteca não oficial. Existe risco de desconexão e bloqueio da conta. Não use o número comercial da pizzaria. As sessões locais estão excluídas do Git.
 
-## Status
+O WhatsApp utiliza memória própria e os pedidos desse canal **ainda não aparecem no painel web**. Para a apresentação, o simulador de navegador continua disponível independentemente da conexão com WhatsApp.
 
-Em desenvolvimento.
+Consulte [docs/whatsapp.md](docs/whatsapp.md) para instruções e limitações.
+
+## Escopo
+
+Os dados de preços foram copiados do arquivo de cardápio enviado para o projeto, mas não foram verificados comercialmente. Não há cobrança por mensagem pela biblioteca, hospedagem obrigatória ou pagamentos reais. O MVC do semestre anterior ainda não está integrado.
+
+**Status:** Protótipo v0.2 — código publicado; a conexão real por QR Code precisa ser testada em um computador com um número de testes.
