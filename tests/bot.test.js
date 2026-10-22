@@ -1,4 +1,4 @@
-const test=require("node:test");const assert=require("node:assert/strict");const {Bot}=require("../src/bot");
-test("menu e cardápio",()=>{const b=new Bot();assert.match(b.falar("a","oi"),/Pizzaria/);assert.match(b.falar("a","1"),/Calabresa/)});
-test("pedido fictício desconta estoque",()=>{const b=new Bot();b.falar("a","oi");b.falar("a","2");b.falar("a","1");b.falar("a","2");b.falar("a","2");assert.match(b.falar("a","1"),/P001/);assert.equal(b.pedidos[0].total,9000);assert.equal(b.produtos[0].estoque,6)});
-test("cancelamento não gera pedido",()=>{const b=new Bot();b.falar("a","oi");b.falar("a","2");b.falar("a","1");b.falar("a","1");b.falar("a","2");b.falar("a","2");assert.match(b.falar("a","2"),/cancelado/);assert.equal(b.pedidos.length,0)});
+const test=require('node:test');const assert=require('node:assert/strict');const {Bot}=require('../src/bot');
+test('catálogo com tamanhos e bebidas',()=>{const b=new Bot();assert.equal(b.produtos.filter(p=>p.tipo==='pizza').length,77);assert.equal(b.produtos.filter(p=>p.tipo==='bebida').length,18);assert.equal(b.produtos.find(p=>p.id===16).precosCentavos.GRANDE,5790);});
+test('pedido simulado pizza grande e bebida',()=>{const b=new Bot();for(const t of ['oi','2','1','16','3','2','1','2','1001','1','2','1'])b.falar('a',t);assert.equal(b.pedidos.length,1);assert.equal(b.pedidos[0].total,13280);assert.equal(b.produtos.find(p=>p.id===16).estoque,8);});
+test('cancelamento não gera pedido',()=>{const b=new Bot();let r='';for(const t of ['oi','2','1','1','1','1','2','2'])r=b.falar('a',t);assert.match(r,/cancelado/);assert.equal(b.pedidos.length,0);});
