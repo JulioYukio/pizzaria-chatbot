@@ -1,26 +1,1133 @@
-[
-  {
-    "id": 1,
-    "nome": "Pizza Calabresa",
-    "preco": 4500,
-    "estoque": 8
-  },
-  {
-    "id": 2,
-    "nome": "Pizza Mussarela",
-    "preco": 4200,
-    "estoque": 7
-  },
-  {
-    "id": 3,
-    "nome": "Pizza Portuguesa",
-    "preco": 4900,
-    "estoque": 5
-  },
-  {
-    "id": 4,
-    "nome": "Refrigerante 2L",
-    "preco": 1200,
-    "estoque": 10
-  }
-]
+{
+  "pizzas": [
+    {
+      "id": 1,
+      "nome": "Alho",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "alho crocante, muçarela, parmesão",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 2,
+      "nome": "Aliche Argentino",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "filés de anchovas, muçarela, tomate, parmesão",
+      "precosCentavos": {
+        "BROTO": 5500,
+        "MÉDIA": 6500,
+        "GRANDE": 7500,
+        "FAMÍLIA": 8500
+      }
+    },
+    {
+      "id": 3,
+      "nome": "Americana",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, presunto cozido, azeitonas picadas",
+      "precosCentavos": {
+        "BROTO": 4300,
+        "MÉDIA": 5400,
+        "GRANDE": 6400,
+        "FAMÍLIA": 7400
+      }
+    },
+    {
+      "id": 4,
+      "nome": "A Moda da Casa",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "atum sólido em pedaços, muçarela, ervilha fresca, cebola, bacon",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6500,
+        "GRANDE": 7500,
+        "FAMÍLIA": 8500
+      }
+    },
+    {
+      "id": 5,
+      "nome": "Argentina",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "atum sólido em pedaços, provolone, cebola",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6300,
+        "GRANDE": 7400,
+        "FAMÍLIA": 8400
+      }
+    },
+    {
+      "id": 6,
+      "nome": "Atum Sólido",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "atum sólido em pedaços, cebola",
+      "precosCentavos": {
+        "BROTO": 4800,
+        "MÉDIA": 5800,
+        "GRANDE": 6900,
+        "FAMÍLIA": 7900
+      }
+    },
+    {
+      "id": 7,
+      "nome": "Bacon",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, bacon, ovos",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6600,
+        "FAMÍLIA": 7600
+      }
+    },
+    {
+      "id": 8,
+      "nome": "Baiacatu",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa moída, catupiry, cebola",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5600,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 9,
+      "nome": "Baiana",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa moída, pimenta, cebola, ovos",
+      "precosCentavos": {
+        "BROTO": 4000,
+        "MÉDIA": 5000,
+        "GRANDE": 5790,
+        "FAMÍLIA": 6790
+      }
+    },
+    {
+      "id": 10,
+      "nome": "Baiana 2",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa moída, muçarela, pimenta, parmesão",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5600,
+        "GRANDE": 6600,
+        "FAMÍLIA": 7600
+      }
+    },
+    {
+      "id": 11,
+      "nome": "Berinjela",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "berinjela refogada no azeite, muçarela, cebola",
+      "precosCentavos": {
+        "BROTO": 4200,
+        "MÉDIA": 5200,
+        "GRANDE": 6200,
+        "FAMÍLIA": 7200
+      }
+    },
+    {
+      "id": 12,
+      "nome": "Brasileira",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "atum sólido em pedaços, muçarela, cebola",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6400,
+        "GRANDE": 7400,
+        "FAMÍLIA": 8400
+      }
+    },
+    {
+      "id": 13,
+      "nome": "Brasileira 2",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "atum sólido em pedaços, catupiry, cebola",
+      "precosCentavos": {
+        "BROTO": 5500,
+        "MÉDIA": 6600,
+        "GRANDE": 7800,
+        "FAMÍLIA": 8800
+      }
+    },
+    {
+      "id": 14,
+      "nome": "Brócolis",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "brócolis refogado no azeite, muçarela",
+      "precosCentavos": {
+        "BROTO": 4300,
+        "MÉDIA": 5400,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 15,
+      "nome": "Caipira",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "peito de frango desfiado, milho, catupiry",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 16,
+      "nome": "Calabresa",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa fatiada, cebola",
+      "precosCentavos": {
+        "BROTO": 4000,
+        "MÉDIA": 5000,
+        "GRANDE": 5790,
+        "FAMÍLIA": 6790
+      }
+    },
+    {
+      "id": 17,
+      "nome": "Camarão",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "camarão graúdo refogado no azeite, catupiry original",
+      "precosCentavos": {
+        "BROTO": 5500,
+        "MÉDIA": 6500,
+        "GRANDE": 8500,
+        "FAMÍLIA": 9500
+      }
+    },
+    {
+      "id": 18,
+      "nome": "Canadense",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "lombo canadense, cebola, catupiry",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 19,
+      "nome": "Carbonara",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa fatiada, champignon, muçarela, ervilha fresca, ovos",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 20,
+      "nome": "Carne Seca",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "carne seca refogada, muçarela, cebola",
+      "precosCentavos": {
+        "BROTO": 4800,
+        "MÉDIA": 6000,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 21,
+      "nome": "Carne Seca 2",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "carne seca refogada, catupiry, cebola",
+      "precosCentavos": {
+        "BROTO": 4900,
+        "MÉDIA": 6100,
+        "GRANDE": 7100,
+        "FAMÍLIA": 8100
+      }
+    },
+    {
+      "id": 22,
+      "nome": "Catumilho",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "catupiry, milho",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 23,
+      "nome": "Catupiry",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "catupiry, tomate fatiado",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 24,
+      "nome": "Crocante",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, batata palha crocante",
+      "precosCentavos": {
+        "BROTO": 4300,
+        "MÉDIA": 5300,
+        "GRANDE": 6300,
+        "FAMÍLIA": 7300
+      }
+    },
+    {
+      "id": 25,
+      "nome": "Dois Queijos",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, catupiry",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 26,
+      "nome": "Escarola",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "escarola refogada no azeite, muçarela, cebola",
+      "precosCentavos": {
+        "BROTO": 4200,
+        "MÉDIA": 5200,
+        "GRANDE": 6200,
+        "FAMÍLIA": 7200
+      }
+    },
+    {
+      "id": 27,
+      "nome": "Escarola 2",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "escarola refogada no azeite, bacon, muçarela",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 28,
+      "nome": "Francesa",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "presunto cozido, bacon, catupiry",
+      "precosCentavos": {
+        "BROTO": 4300,
+        "MÉDIA": 5600,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 29,
+      "nome": "Frangalho",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "frango desfiado, muçarela, alho crocante",
+      "precosCentavos": {
+        "BROTO": 4300,
+        "MÉDIA": 5600,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 30,
+      "nome": "Galeto",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "frango desfiado, milho, tomate, queijo cheddar",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 31,
+      "nome": "Jardineira",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "peito de peru defumado, palmito, milho, ervilha, champignon e catupiry",
+      "precosCentavos": {
+        "BROTO": 5300,
+        "MÉDIA": 6600,
+        "GRANDE": 7600,
+        "FAMÍLIA": 8600
+      }
+    },
+    {
+      "id": 32,
+      "nome": "Lombinho",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "lombo canadense e cebola",
+      "precosCentavos": {
+        "BROTO": 3900,
+        "MÉDIA": 5000,
+        "GRANDE": 6000,
+        "FAMÍLIA": 7000
+      }
+    },
+    {
+      "id": 33,
+      "nome": "Marguerita",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, rodelas de tomate, manjericão fresco e parmesão",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5400,
+        "GRANDE": 6400,
+        "FAMÍLIA": 7400
+      }
+    },
+    {
+      "id": 34,
+      "nome": "Milho",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "milho e muçarela",
+      "precosCentavos": {
+        "BROTO": 4300,
+        "MÉDIA": 5400,
+        "GRANDE": 6300,
+        "FAMÍLIA": 7300
+      }
+    },
+    {
+      "id": 35,
+      "nome": "Muçarela de Búfala",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela de búfala e tomate seco",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 36,
+      "nome": "Muçarela",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela e azeitonas",
+      "precosCentavos": {
+        "BROTO": 4000,
+        "MÉDIA": 5000,
+        "GRANDE": 5990,
+        "FAMÍLIA": 6990
+      }
+    },
+    {
+      "id": 37,
+      "nome": "Napolitana",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, parmesão e rodelas de tomate",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5400,
+        "GRANDE": 6400,
+        "FAMÍLIA": 7400
+      }
+    },
+    {
+      "id": 38,
+      "nome": "Palmito",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "palmito, muçarela e tomate",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 6000,
+        "GRANDE": 7000,
+        "FAMÍLIA": 8000
+      }
+    },
+    {
+      "id": 39,
+      "nome": "Namorados",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "palmito, muçarela e catupiry",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 6000,
+        "GRANDE": 7000,
+        "FAMÍLIA": 8000
+      }
+    },
+    {
+      "id": 40,
+      "nome": "Parisiense",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "frango desfiado, ervilha fresca, palmito e muçarela",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5900,
+        "GRANDE": 6900,
+        "FAMÍLIA": 7900
+      }
+    },
+    {
+      "id": 41,
+      "nome": "Peito de Peru",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "peito de peru defumado e catupiry",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 42,
+      "nome": "Peito de Peru 2",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "peito de peru defumado, tomate, muçarela e parmesão",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 43,
+      "nome": "Pepperoni",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, pepperoni e parmesão",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5900,
+        "GRANDE": 6900,
+        "FAMÍLIA": 7900
+      }
+    },
+    {
+      "id": 44,
+      "nome": "Peruana",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "atum sólido em pedaços, palmito, catupiry e cebola",
+      "precosCentavos": {
+        "BROTO": 5600,
+        "MÉDIA": 6700,
+        "GRANDE": 8000,
+        "FAMÍLIA": 9000
+      }
+    },
+    {
+      "id": 45,
+      "nome": "Pizzaiolo",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "frango desfiado, palmito, ovos, bacon e catupiry",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5900,
+        "GRANDE": 6900,
+        "FAMÍLIA": 7900
+      }
+    },
+    {
+      "id": 46,
+      "nome": "Portuguesa",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, presunto cozido, ovos, ervilha fresca e cebola",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 47,
+      "nome": "Quatro Queijos",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, provolone, catupiry e gorgonzola",
+      "precosCentavos": {
+        "BROTO": 4800,
+        "MÉDIA": 6000,
+        "GRANDE": 7000,
+        "FAMÍLIA": 8000
+      }
+    },
+    {
+      "id": 48,
+      "nome": "Siciliana",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "champignon, muçarela, tomate e bacon",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 49,
+      "nome": "Toscana",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa fatiada e muçarela",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 50,
+      "nome": "Três Terços",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "três sabores de pizzas a sua escolha (exceto camarão e parma)",
+      "precosCentavos": {
+        "BROTO": 6500,
+        "MÉDIA": 6500,
+        "GRANDE": 7500,
+        "FAMÍLIA": 8500
+      }
+    },
+    {
+      "id": 51,
+      "nome": "Três Queijos",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, provolone e catupiry",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 52,
+      "nome": "A Fornalha",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "muçarela de búfala, peito de peru, tomate seco e batata palha",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 53,
+      "nome": "Brócolis Especial",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "brócolis refogado no azeite, bacon e provolone",
+      "precosCentavos": {
+        "BROTO": 4400,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 54,
+      "nome": "Cinco Queijos",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, provolone, parmesão, catupiry e gorgonzola",
+      "precosCentavos": {
+        "BROTO": 4800,
+        "MÉDIA": 6000,
+        "GRANDE": 7000,
+        "FAMÍLIA": 8000
+      }
+    },
+    {
+      "id": 55,
+      "nome": "Criativa",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "monte sua pizza com até quatro ingredientes (exceto camarão e parma)",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6200,
+        "GRANDE": 7200,
+        "FAMÍLIA": 8200
+      }
+    },
+    {
+      "id": 56,
+      "nome": "Escarola Especial",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "escarola refogada no azeite, bacon, champignon e catupiry",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 57,
+      "nome": "Portuguesa Especial",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, presunto cozido, ovos, cebola, palmito e ervilha fresca",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 58,
+      "nome": "Tropical",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "lombo canadense, muçarela e abacaxi",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 59,
+      "nome": "Rúcula",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "rúcula hidropônica, tomate seco e muçarela de búfala",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 60,
+      "nome": "Toronto",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "lombo canadense, cebola, ovos e provolone",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 61,
+      "nome": "Vegetariana",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "palmito, escarola, cebola, milho, ervilha, tomate seco e muçarela",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 62,
+      "nome": "Bolonhesa",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "carne moída refogada, muçarela e catupiry",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6200,
+        "GRANDE": 7200,
+        "FAMÍLIA": 8200
+      }
+    },
+    {
+      "id": 63,
+      "nome": "Estrogonofe",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "carne em tiras, muçarela, champignon, parmesão e batata palha crocante",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6200,
+        "GRANDE": 7200,
+        "FAMÍLIA": 8200
+      }
+    },
+    {
+      "id": 107,
+      "nome": "Hot Dog",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "salsicha fatiada, rodelas de tomate, cebola, muçarela e batata palha",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 108,
+      "nome": "Hamburguer Picanha",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "hamburguer de picanha, muçarela, tomate e alface",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5500,
+        "GRANDE": 6500,
+        "FAMÍLIA": 7500
+      }
+    },
+    {
+      "id": 110,
+      "nome": "Lombo Especial",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "lombo canadense, cream cheese e bacon em cubos",
+      "precosCentavos": {
+        "BROTO": 4500,
+        "MÉDIA": 5800,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
+      }
+    },
+    {
+      "id": 111,
+      "nome": "Coração Alcachofra",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "alcachofra, muçarela de búfala, manjericão fresco e azeitonas pretas fatiadas",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6400,
+        "GRANDE": 7400,
+        "FAMÍLIA": 8400
+      }
+    },
+    {
+      "id": 112,
+      "nome": "Presunto Parma",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "parma, coração de alcachofra, muçarela de búfala, manjericão e azeitonas pretas fatiadas",
+      "precosCentavos": {
+        "BROTO": 5500,
+        "MÉDIA": 6800,
+        "GRANDE": 8200,
+        "FAMÍLIA": 9200
+      }
+    },
+    {
+      "id": 113,
+      "nome": "Alho Negro",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "muçarela, tomate cereja e alho negro em pasta",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6200,
+        "GRANDE": 7200,
+        "FAMÍLIA": 8200
+      }
+    },
+    {
+      "id": 101,
+      "nome": "Tarantela (Light)",
+      "categoria": "Light",
+      "tipo": "pizza",
+      "ingredientes": "queijo fresco, rúcula hidropônica e tomate seco",
+      "precosCentavos": {
+        "BROTO": 3600,
+        "MÉDIA": 4600,
+        "GRANDE": 5600,
+        "FAMÍLIA": 6600
+      }
+    },
+    {
+      "id": 102,
+      "nome": "Banana (Doce)",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "banana, canela e leite condensado",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    },
+    {
+      "id": 103,
+      "nome": "Romeu e Julieta",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "muçarela e goiabada cremosa",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    },
+    {
+      "id": 104,
+      "nome": "Sensação",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "chocolate ao leite, morangos e leite condensado",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    },
+    {
+      "id": 105,
+      "nome": "Floresta Negra",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "chocolate ao leite, granulado de chocolate e cereja ao marasquino",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    },
+    {
+      "id": 106,
+      "nome": "Casal 20",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "chocolate branco, chocolate ao leite e morangos (ou produtos da época)",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    },
+    {
+      "id": 109,
+      "nome": "M&M's",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "chocolate ao leite e confeitos coloridos",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    },
+    {
+      "id": 120,
+      "nome": "Churros",
+      "categoria": "doce",
+      "tipo": "pizza",
+      "ingredientes": "doce de leite, granulado e canela",
+      "precosCentavos": {
+        "BROTO": 3800,
+        "MÉDIA": 4500,
+        "GRANDE": 4900,
+        "FAMÍLIA": 5900
+      }
+    }
+  ],
+  "bebidas": [
+    {
+      "id": 1001,
+      "nome": "Coca-Cola 2L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1700
+    },
+    {
+      "id": 1002,
+      "nome": "Coca-Cola Zero 2L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1700
+    },
+    {
+      "id": 1003,
+      "nome": "Sprite 2L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1500
+    },
+    {
+      "id": 1004,
+      "nome": "Fanta Laranja 2L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1500
+    },
+    {
+      "id": 1005,
+      "nome": "Fanta Uva 2L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1500
+    },
+    {
+      "id": 1006,
+      "nome": "Fanta Guaraná 2L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1500
+    },
+    {
+      "id": 1007,
+      "nome": "Sucos 1L",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 850
+    },
+    {
+      "id": 1008,
+      "nome": "Coca-Cola 600ml",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1000
+    },
+    {
+      "id": 1009,
+      "nome": "Refrigerante 600ml (Outros)",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1000
+    },
+    {
+      "id": 1010,
+      "nome": "Refrigerante em lata",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 600
+    },
+    {
+      "id": 1011,
+      "nome": "Água sem gás 500ml",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 400
+    },
+    {
+      "id": 1012,
+      "nome": "Água com gás 500ml",
+      "categoria": "nao_alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 400
+    },
+    {
+      "id": 1013,
+      "nome": "Cerveja Budweiser",
+      "categoria": "alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1200
+    },
+    {
+      "id": 1014,
+      "nome": "Cerveja Eisenbahn",
+      "categoria": "alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1200
+    },
+    {
+      "id": 1015,
+      "nome": "Cerveja Stella Artois",
+      "categoria": "alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1200
+    },
+    {
+      "id": 1016,
+      "nome": "Cerveja Heineken",
+      "categoria": "alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 1200
+    },
+    {
+      "id": 1017,
+      "nome": "Vinho da Casa (Seco)",
+      "categoria": "alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 2500
+    },
+    {
+      "id": 1018,
+      "nome": "Vinho da Casa (Suave)",
+      "categoria": "alcoolica",
+      "tipo": "bebida",
+      "precoCentavos": 2500
+    }
+  ]
+}
