@@ -147,3 +147,7 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Sessões locais de autenticação WhatsApp (NUNCA versionar)
+.wwebjs_auth/
+.wwebjs_cache/
