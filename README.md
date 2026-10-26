@@ -57,3 +57,10 @@ Consulte [docs/whatsapp.md](docs/whatsapp.md) para instruções e limitações.
 Os dados de preços foram copiados do arquivo de cardápio enviado para o projeto, mas não foram verificados comercialmente. Não há cobrança por mensagem pela biblioteca, hospedagem obrigatória ou pagamentos reais. O MVC do semestre anterior ainda não está integrado.
 
 **Status:** Protótipo v0.3 — código publicado; a conexão real por QR Code precisa ser testada em um computador com um número de testes.
+
+## Validação de tamanho e imagem no WhatsApp
+
+- Aceita nomes completos (`grande`, `família`), abreviações (`G`, `F`) e variações sem acentos (`familia`, `media`).
+- Quando reconhece erro simples (`grnade`), sugere a correção **sem incluir o produto automaticamente**. O usuário deve reenviar a opção corrigida.
+- O texto **2 - Fazer pedido** exibe os quatro tamanhos.
+- Quando o cliente digitar `menu` ou escolher `1 - Ver cardápio` na tela principal do WhatsApp, o bot tenta enviar `assets/cardapio.png`; enquanto o arquivo não existir, informa que a imagem ainda não está disponível.

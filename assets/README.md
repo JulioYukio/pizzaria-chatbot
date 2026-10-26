@@ -1,0 +1,1 @@
+Coloque futuramente o cardápio em `assets/cardapio.png` (PNG com sabores e valores).\n

@@ -26,3 +26,21 @@ test("cancelamento não gera pedido",()=>{
  const b=new Bot();for(const t of ["oi","2","1","16 G 1","2"])b.falar("a",t);
  assert.match(b.falar("a","2"),/cancelado/);assert.equal(b.pedidos.length,0);
 });
+
+test("tamanhos por extenso e acentos",()=>{
+ const b=new Bot();for(const t of ["oi","2","1"])b.falar("a",t);
+ assert.match(b.falar("a","16 grande 2"),/2x Calabresa GRANDE/);
+});
+test("erro pequeno sugere correção sem colocar pedido no carrinho",()=>{
+ const b=new Bot();for(const t of ["oi","2","1"])b.falar("a",t);
+ const resposta=b.falar("a","16 grnade 2");
+ assert.match(resposta,/Você quis dizer GRANDE/);
+ assert.equal(b.sessoes.get("a").itens.length,0);
+ assert.match(b.falar("a","16 grande 2"),/Adicionado/);
+});
+test("tamanho isolado aceita nome completo e sugere correção",()=>{
+ const b=new Bot();for(const t of ["oi","2","1","16"])b.falar("a",t);
+ assert.match(b.falar("a","grnade"),/Você quis dizer GRANDE/);
+ assert.equal(b.sessoes.get("a").etapa,"tamanho");
+ assert.match(b.falar("a","Grande"),/Quantas unidades/);
+});

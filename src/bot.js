@@ -7,10 +7,37 @@ function tamanhoDe(token) {
  const t=normalizar(token||"");
  return ({B:"BROTO",BROTO:"BROTO",M:"MÉDIA",MEDIA:"MÉDIA",G:"GRANDE",GRANDE:"GRANDE",F:"FAMÍLIA",FAMILIA:"FAMÍLIA"})[t]||null;
 }
+
+const opcoesTamanho="B - Broto | M - Média | G - Grande | F - Família";
+function distancia(a,b){
+ const m=Array.from({length:b.length+1},(_,i)=>i);
+ for(let i=1;i<=a.length;i++){
+  let anterior=m[0];m[0]=i;
+  for(let j=1;j<=b.length;j++){
+   const antigo=m[j];
+   m[j]=Math.min(m[j]+1,m[j-1]+1,anterior+(a[i-1]===b[j-1]?0:1));
+   anterior=antigo;
+  }
+ }
+ return m[b.length];
+}
+function analisarTamanho(entrada){
+ const texto=normalizar(String(entrada||"").trim());
+ const exatos={B:"BROTO",BROTO:"BROTO",M:"MÉDIA",MEDIA:"MÉDIA",G:"GRANDE",GRANDE:"GRANDE",F:"FAMÍLIA",FAMILIA:"FAMÍLIA"};
+ if(exatos[texto])return {tamanho:exatos[texto]};
+ if(texto.length<4)return {};
+ const candidatos=["BROTO","MEDIA","GRANDE","FAMILIA"].map(t=>({nome:t,dist:distancia(texto,t)})).sort((a,b)=>a.dist-b.dist);
+ if(candidatos[0].dist<=2&&(!candidatos[1]||candidatos[0].dist<candidatos[1].dist)){
+  return {sugestao:exatos[candidatos[0].nome]};
+ }
+ return {};
+}
+
 class Bot {
  constructor(){this.reiniciar();}
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
- menu(){return "🍕 Pizzaria — PROTÓTIPO, sem vendas reais\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
+ menu(){return "🍕 Pizzaria — PROTÓTIPO, sem vendas reais\n1 - Ver cardápio (imagem no WhatsApp, quando disponível)\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
+ fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\n\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  listar(tipo) {
    const produtos=this.produtos.filter(p=>p.tipo===tipo);
    const titulo=tipo==="pizza"?"🍕 CATÁLOGO COMPLETO — PIZZAS":"🥤 BEBIDAS";
@@ -34,7 +61,7 @@ class Bot {
    if(!this.sessoes.has(cliente)||/^(menu|reiniciar|0)$/i.test(t)){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
    const s=this.sessoes.get(cliente);
    if(s.etapa==="menu"){
-     if(t==="1"||t==="2"){s.etapa=t==="1"?"categoriaVer":"categoriaComprar";return "Escolha uma categoria:\n1 - Pizzas\n2 - Bebidas";}
+     if(t==="1"||t==="2"){s.etapa=t==="1"?"categoriaVer":"categoriaComprar";return t==="2"?this.fazerPedido():"Escolha uma categoria:\n1 - Pizzas\n2 - Bebidas";}
      if(t==="3"){s.etapa="consulta";return "Informe o código do pedido (P001):";}
      return "Opção inválida.\n"+this.menu();
    }
@@ -52,8 +79,12 @@ class Bot {
      if(p.estoque<1)return "Produto indisponível no estoque simulado. Escolha outro.";
      s.produtoId=p.id;
      if(p.tipo==="pizza"){
-       const tamanho=tamanhoDe(partes[1]);
-       if(partes.length>1&&!tamanho)return "Tamanho inválido. Use B, M, G ou F. Exemplo: 16 G";
+       const analise=analisarTamanho(partes[1]);
+       const tamanho=analise.tamanho;
+       if(partes.length>1&&!tamanho){
+         if(analise.sugestao)return "Você quis dizer "+analise.sugestao+"? Reenvie o pedido com o tamanho corrigido. Exemplo: "+p.id+" "+analise.sugestao+(partes.length===3?" "+partes[2]:"");
+         return "Tamanho inválido. Escolha: "+opcoesTamanho+". Exemplo: 16 grande 2";
+       }
        if(tamanho){
          if(partes.length>3)return "Formato inválido. Use: 16 G 2 (código, tamanho e quantidade).";
          if(partes.length===3)return this.adicionar(s,p,tamanho,Number(partes[2]));
@@ -69,8 +100,9 @@ class Bot {
      return "Quantas unidades de "+p.nome+"? (1-10)";
    }
    if(s.etapa==="tamanho"){
-     const tamanho=tamanhoDe(t)||(/^[1-4]$/.test(t)?tamanhos[Number(t)-1]:null);
-     if(!tamanho)return "Tamanho inválido. Escolha 1-4 ou B, M, G, F.";
+     const analise=analisarTamanho(t);
+     const tamanho=analise.tamanho||(/^[1-4]$/.test(t)?tamanhos[Number(t)-1]:null);
+     if(!tamanho)return analise.sugestao?"Você quis dizer "+analise.sugestao+"? Digite o tamanho correto para continuar.":"Tamanho inválido. Escolha 1-4 ou "+opcoesTamanho+".";
      const p=this.produtos.find(p=>p.id===s.produtoId);
      s.tamanho=tamanho;s.preco=p.precosCentavos[tamanho];s.etapa="quantidade";
      return p.nome+" "+tamanho+" — "+dinheiro(s.preco)+"\nQuantas unidades? (1-10)";
@@ -80,7 +112,7 @@ class Bot {
      return this.adicionar(s,p,s.tamanho,n);
    }
    if(s.etapa==="mais"){
-     if(t==="1"){s.etapa="categoriaComprar";return "1 - Pizzas\n2 - Bebidas";}
+     if(t==="1"){s.etapa="categoriaComprar";return this.fazerPedido();}
      if(t==="2"){s.etapa="confirmar";return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Cancelar";}
      return "Digite 1 ou 2.";
    }
