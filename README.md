@@ -11,6 +11,20 @@ Protótipo acadêmico, executado localmente, sem custos de implantação e sem v
 - Painel web demonstrativo para acompanhar pedidos originados no próprio simulador.
 - Conexão opcional com WhatsApp Web não oficial (processo separado).
 
+## Novo fluxo: catálogo completo e pedido direto
+
+O bot apresenta **todos os 77 sabores em uma única mensagem**, sem páginas. Para iniciar, envie `oi`, selecione `2 - Fazer pedido` e depois `1 - Pizzas`.
+
+Responda diretamente com:
+- `16 G 2` — 2 pizzas Calabresa **Grandes**
+- `16 M` — Calabresa **Média** (o bot só pergunta a quantidade)
+- `16` — o bot mostra os ingredientes e os quatro preços, depois pergunta tamanho e quantidade
+- `1001 2` — 2 bebidas Coca-Cola 2L (na categoria Bebidas)
+
+Tamanhos aceitos: `B` (Broto), `M` (Média), `G` (Grande), `F` (Família), ou nomes completos sem depender de acentos.
+
+O mesmo fluxo é usado no simulador e no módulo de WhatsApp. O catálogo apresenta nomes resumidos para não tornar a mensagem excessivamente longa, e os ingredientes aparecem quando o cliente envia apenas o código do sabor.
+
 ## Início rápido
 
 Instale Node.js 20 ou superior.
@@ -42,4 +56,4 @@ Consulte [docs/whatsapp.md](docs/whatsapp.md) para instruções e limitações.
 
 Os dados de preços foram copiados do arquivo de cardápio enviado para o projeto, mas não foram verificados comercialmente. Não há cobrança por mensagem pela biblioteca, hospedagem obrigatória ou pagamentos reais. O MVC do semestre anterior ainda não está integrado.
 
-**Status:** Protótipo v0.2 — código publicado; a conexão real por QR Code precisa ser testada em um computador com um número de testes.
+**Status:** Protótipo v0.3 — código publicado; a conexão real por QR Code precisa ser testada em um computador com um número de testes.
