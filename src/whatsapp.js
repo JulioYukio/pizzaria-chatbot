@@ -17,7 +17,8 @@ client.on('message',async msg=>{
  try{
   if(/^(menu|reiniciar|0|1)$/i.test(String(msg.body||"").trim()) &&
      (/^(menu|reiniciar|0)$/i.test(String(msg.body||"").trim()) ||
-      bot.sessoes.get(msg.from)?.etapa==="menu")){
+      bot.sessoes.get(msg.from)?.etapa==="menu") &&
+     !(String(msg.body||"").trim()==="0"&&bot.sessoes.get(msg.from)?.etapa==="ver")){
    const file=path.join(__dirname,"..","assets","cardapio.png");
    if(fs.existsSync(file))await client.sendMessage(msg.from,MessageMedia.fromFilePath(file),{caption:"Cardápio — sabores e preços"});
    else await client.sendMessage(msg.from,"Cardápio em imagem ainda não disponível. Em breve!");

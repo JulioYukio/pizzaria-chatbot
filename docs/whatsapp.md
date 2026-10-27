@@ -11,6 +11,8 @@ Abra http://127.0.0.1:3000. Para rodar os testes: `npm test`.
 
 O catálogo inclui 77 pizzas, quatro tamanhos, e 18 bebidas fornecidos pela pizzaria. A quantidade disponível é **fictícia** (10 por produto); não é estoque real.
 
+Em **1 - Ver cardápio**, escolha a categoria e envie **0** para pedir nessa mesma categoria, ou envie diretamente `16 G 2` (pizza) / `1001 2` (bebida). Código sozinho e código com tamanho também funcionam: o bot pergunta os dados restantes. Erros de tamanho exigem correção explícita, sem adicionar automaticamente. No WhatsApp, esse `0` não reinicia a conversa nem reenvia a imagem. Fora dessa tela, `0` continua reiniciando; `menu` e `reiniciar` funcionam em qualquer etapa.
+
 ## WhatsApp Web não oficial (opcional)
 A biblioteca é gratuita, mas não é aprovada oficialmente pela Meta e pode provocar suspensão da conta. Use somente uma conta de testes disponível e autorizada, nunca o número comercial da pizzaria.
 
