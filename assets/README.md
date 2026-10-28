@@ -1,1 +1,1 @@
-Coloque futuramente o cardápio em `assets/cardapio.png` (PNG com sabores e valores).\n
+Coloque o PDF oficial da pizzaria com o nome exato `cardapio.pdf` nesta pasta.

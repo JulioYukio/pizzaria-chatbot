@@ -41,7 +41,7 @@ class Bot {
  listar(tipo) {
    const produtos=this.produtos.filter(p=>p.tipo===tipo);
    const titulo=tipo==="pizza"?"🍕 CATÁLOGO COMPLETO — PIZZAS":"🥤 BEBIDAS";
-   const linhas=produtos.map(p=>p.id+" - "+p.nome+(p.tipo==="bebida"?" — "+dinheiro(p.precoCentavos):""));
+   const linhas=produtos.map(p=>(p.id===109?"109M":p.id===120?"109C / 120":p.id)+" - "+p.nome+(p.tipo==="bebida"?" — "+dinheiro(p.precoCentavos):""));
    return titulo+"\n"+linhas.join("\n")+"\n\n"+(tipo==="pizza"?"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 16 G (Calabresa grande)\nOu: 16 G 2 (duas Calabresas grandes).":"Exemplo: 1001 2 (duas bebidas).")+"\nDigite 'menu' para voltar.";
  }
  total(s){return s.itens.reduce((a,i)=>a+i.preco*i.quantidade,0);}
@@ -77,8 +77,10 @@ class Bot {
        return "🛒 Escolha seu produto pelo código:\n"+this.listar(s.tipo);
      }
      const partes=t.split(/\s+/),id=Number(partes[0]);
-     const p=this.produtos.find(p=>p.id===id&&p.tipo===s.tipo);
-     if(!p||!Number.isInteger(id))return "Código inválido. Consulte a lista e digite o número correto.\n"+this.listar(s.tipo);
+     if(s.tipo==="pizza"&&id===109&&!/^109[MC]$/i.test(partes[0]))return "⚠️ Código 109 duplicado no PDF: digite 109M para M&M's ou 109C para Churros (também 120).";
+     const codigo=/^109M$/i.test(partes[0])?109:/^109C$/i.test(partes[0])?120:id;
+     const p=this.produtos.find(p=>p.id===codigo&&p.tipo===s.tipo);
+     if(!p||(!Number.isInteger(id)&&!/^109[MC]$/i.test(partes[0])))return "Código inválido. Consulte a lista e digite o número correto.\n"+this.listar(s.tipo);
      if(p.estoque<1)return "Produto indisponível no estoque simulado. Escolha outro.";
      s.produtoId=p.id;
      if(p.tipo==="pizza"){
