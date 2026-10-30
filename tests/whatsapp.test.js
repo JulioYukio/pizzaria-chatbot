@@ -20,7 +20,8 @@ function ambiente({arquivoExiste=true,falhaPDF=false}={}){
  };
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
   require:nome=>{assert.ok(Object.hasOwn(dependencias,nome),nome);return dependencias[nome];},
-  __dirname:path.join(__dirname,"../src"),console,process
+  __dirname:path.join(__dirname,"../src"),console,process,
+  setTimeout:()=>1,clearTimeout:()=>{}
  });
  return {bot,envios,respostas,enviar:async body=>eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)})};
 }
