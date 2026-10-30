@@ -234,6 +234,19 @@ do WhatsApp. Edite **apenas os textos entre aspas**: não altere variáveis,
 condições, operações de preço ou códigos. Alguns testes validam partes das
 mensagens; depois de editar rode `npm.cmd test`.
 
+
+### Controle de mensagens inválidas no WhatsApp
+
+Para evitar respostas repetitivas quando o cliente envia muitas opções incorretas, o módulo `src/whatsapp.js` **agrupa avisos de erro por contato**:
+
+- Aguarda **1,5 segundo** antes de responder a uma opção inválida.
+- Se chegam 10 mensagens inválidas em seguida, envia **um único aviso**, usando a última resposta de erro.
+- Após enviar um aviso, evita novos avisos de erro por **8 segundos** para o mesmo contato.
+- Se o cliente enviar uma opção válida antes do aviso, o aviso pendente é **cancelado** e o bot responde normalmente à opção válida.
+- Essa filtragem funciona no **WhatsApp**; o simulador web mantém respostas imediatas para facilitar testes.
+
+Os valores podem ser alterados no começo do `src/whatsapp.js` pelas constantes `ESPERA_ERRO_MS` e `INTERVALO_AVISO_MS`. A classificação das respostas inválidas utiliza mensagens conhecidas do motor de conversa; ao alterar radicalmente esses textos, confira os testes.
+
 ## 8. Teste completo no WhatsApp
 
 Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagens privadas ao número que foi conectado no passo anterior.
