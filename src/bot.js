@@ -90,10 +90,7 @@ class Bot {
      if(s.tipo==="pizza"&&id===109&&!/^109[MC]$/i.test(partes[0])){
        if(partes.length>3)return "Formato inválido. Use: 109 G 2 (código, tamanho e quantidade).";
        s.pedido109=t;s.origem109=s.etapa;s.etapa="escolher109";
-       return "Qual sabor você deseja para a pizza 109?\
-1 - M&M\u0027s\
-2 - Churros\
-Responda 1 ou 2 para continuar seu pedido.";
+       return "Qual sabor você deseja para a pizza 109?\n1 - M&M\u0027s\n2 - Churros\nResponda 1 ou 2 para continuar seu pedido.";
      }
      const codigo=/^109M$/i.test(partes[0])?109:/^109C$/i.test(partes[0])?120:id;
      const p=this.produtos.find(p=>p.id===codigo&&p.tipo===s.tipo);
