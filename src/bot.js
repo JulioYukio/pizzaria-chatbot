@@ -36,13 +36,13 @@ function analisarTamanho(entrada){
 class Bot {
  constructor(){this.reiniciar();}
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
- menu(){return "🍕 Pizzaria — PROTÓTIPO, sem vendas reais\n1 - Ver cardápio (PDF pelo WhatsApp)\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
- fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\n\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
+ menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
+ fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  listar(tipo) {
    const produtos=this.produtos.filter(p=>p.tipo===tipo);
    const titulo=tipo==="pizza"?"🍕 CATÁLOGO COMPLETO — PIZZAS":"🥤 BEBIDAS";
    const linhas=produtos.map(p=>(p.id===109?"109M":p.id===120?"109C / 120":p.id)+" - "+p.nome+(p.tipo==="bebida"?" — "+dinheiro(p.precoCentavos):""));
-   return titulo+"\n"+linhas.join("\n")+"\n\n"+(tipo==="pizza"?"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 16 G (Calabresa grande)\nOu: 16 G 2 (duas Calabresas grandes).":"Exemplo: 1001 2 (duas bebidas).")+"\nDigite 'menu' para voltar.";
+   return titulo+"\n"+linhas.join("\n")+"\n\n"+(tipo==="pizza"?"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 16 G (Calabresa grande)\nOu: 16 G 2 (duas pizzas de calabresa grande).":"Exemplo: 1001 2 (duas bebidas).")+"\nDigite 'menu' para voltar.";
  }
  total(s){return s.itens.reduce((a,i)=>a+i.preco*i.quantidade,0);}
  adicionar(s,p,tamanho,quantidade){
@@ -60,6 +60,16 @@ class Bot {
    if(!t)return "Digite uma mensagem.";
    if(!this.sessoes.has(cliente)||/^(menu|reiniciar)$/i.test(t)||(t==="0"&&this.sessoes.get(cliente).etapa!=="ver")){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
    const s=this.sessoes.get(cliente);
+   if(s.etapa==="escolher109"){
+     const escolha=normalizar(t);
+     const codigo=escolha==="1"||escolha==="M&M'S"||escolha==="M&MS"||escolha==="MMS"?"109M":escolha==="2"||escolha==="CHURROS"?"109C":null;
+     if(!codigo)return "Escolha um sabor para continuar:\n1 - M&M's\n2 - Churros";
+     const pedido=s.pedido109;
+     delete s.pedido109;
+     s.etapa=s.origem109||"produto";
+     delete s.origem109;
+     return this.falar(cliente,pedido.replace(/^109(?=\s|$)/,codigo));
+   }
    if(s.etapa==="menu"){
      if(t==="1"||t==="2"){s.etapa=t==="1"?"categoriaVer":"categoriaComprar";return t==="2"?this.fazerPedido():"Escolha uma categoria:\n1 - Pizzas\n2 - Bebidas";}
      if(t==="3"){s.etapa="consulta";return "Informe o código do pedido (P001):";}
@@ -77,7 +87,14 @@ class Bot {
        return "🛒 Escolha seu produto pelo código:\n"+this.listar(s.tipo);
      }
      const partes=t.split(/\s+/),id=Number(partes[0]);
-     if(s.tipo==="pizza"&&id===109&&!/^109[MC]$/i.test(partes[0]))return "⚠️ Código 109 duplicado no PDF: digite 109M para M&M's ou 109C para Churros (também 120).";
+     if(s.tipo==="pizza"&&id===109&&!/^109[MC]$/i.test(partes[0])){
+       if(partes.length>3)return "Formato inválido. Use: 109 G 2 (código, tamanho e quantidade).";
+       s.pedido109=t;s.origem109=s.etapa;s.etapa="escolher109";
+       return "Qual sabor você deseja para a pizza 109?\
+1 - M&M\u0027s\
+2 - Churros\
+Responda 1 ou 2 para continuar seu pedido.";
+     }
      const codigo=/^109M$/i.test(partes[0])?109:/^109C$/i.test(partes[0])?120:id;
      const p=this.produtos.find(p=>p.id===codigo&&p.tipo===s.tipo);
      if(!p||(!Number.isInteger(id)&&!/^109[MC]$/i.test(partes[0])))return "Código inválido. Consulte a lista e digite o número correto.\n"+this.listar(s.tipo);
