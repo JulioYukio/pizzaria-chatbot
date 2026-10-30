@@ -42,3 +42,59 @@ test("falha no PDF não impede texto",async()=>{
  assert.match(a.respostas.at(-1),/Exemplo: 31 G/);
  assert.ok(a.envios.some(x=>/Não consegui enviar o PDF/.test(x.corpo)));
 });
+
+test("várias mensagens inválidas geram um aviso, sem avalanche",async()=>{
+ const eventos={},envios=[],respostas=[],relogios=new Map();let sequencia=0;
+ const bot=new Bot();
+ class Client{
+  on(evento,fn){eventos[evento]=fn;}
+  async sendMessage(destino,texto){envios.push(texto);}
+  async initialize(){}
+ }
+ const deps={
+  "node:fs":{existsSync:()=>false},"node:path":path,
+  "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({})}},
+  "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
+ };
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
+  require:nome=>deps[nome], __dirname:path.join(__dirname,"../src"),console,process,
+  setTimeout:(fn,ms)=>{assert.equal(ms,1500);const id=++sequencia;relogios.set(id,fn);return id;},
+  clearTimeout:id=>relogios.delete(id)
+ });
+ async function enviar(body){await eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)});}
+ async function flush(){const funcs=[...relogios.values()];relogios.clear();for(const fn of funcs)await fn();}
+ await enviar("oi");
+ for(let i=0;i<10;i++)await enviar("errado"+i);
+ assert.equal(relogios.size,1);
+ assert.equal(respostas.length,1);
+ await flush();
+ assert.equal(envios.filter(x=>/Opção inválida/.test(x)).length,1);
+ for(let i=0;i<10;i++)await enviar("outro"+i);
+ await flush();
+ assert.equal(envios.filter(x=>/Opção inválida/.test(x)).length,1);
+});
+test("mensagem válida cancela erro pendente e só responde ao acerto",async()=>{
+ const eventos={},envios=[],respostas=[],relogios=new Map();let sequencia=0;
+ const bot=new Bot();
+ class Client{
+  on(evento,fn){eventos[evento]=fn;}
+  async sendMessage(destino,texto,opts){envios.push({texto,opts});}
+  async initialize(){}
+ }
+ const deps={
+  "node:fs":{existsSync:()=>false},"node:path":path,
+  "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({})}},
+  "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
+ };
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
+  require:nome=>deps[nome],__dirname:path.join(__dirname,"../src"),console,process,
+  setTimeout:(fn)=>{const id=++sequencia;relogios.set(id,fn);return id;},
+  clearTimeout:id=>relogios.delete(id)
+ });
+ async function enviar(body){await eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)});}
+ await enviar("oi");await enviar("abc");await enviar("2");
+ assert.equal(relogios.size,0);
+ assert.match(respostas.at(-1),/Fazer pedido/);
+ assert.equal(envios.length,0);
+ assert.doesNotMatch(respostas.join(" "),/Opção inválida/);
+});
