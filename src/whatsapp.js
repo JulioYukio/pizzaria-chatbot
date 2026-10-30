@@ -46,6 +46,55 @@ async function enviarTextoSeguro(destino, texto) {
   }
 }
 
+
+// Controle individual por contato. Erros seguidos geram somente um aviso.
+const avisosInvalidos = new Map();
+const ESPERA_ERRO_MS = 1500;
+const INTERVALO_AVISO_MS = 8000;
+
+function ehRespostaInvalida(resposta, entrada, sessao) {
+  if (sessao?.etapa === "ver" && !/^(menu|reiniciar|0)$/i.test(entrada)) return true;
+  return /^(Opção inválida\.|Digite 1 ou 2\.|Digite 1 para pizzas|Digite 1 para confirmar|Digite 1 para confirmar ou 2|Código inválido\.|Tamanho inválido\.|Quantidade inválida\.|Formato inválido\.|Escolha um sabor para continuar:|Você quis dizer |Estoque simulado insuficiente\.|Produto indisponível no estoque simulado\.|Pedido não encontrado nesta conversa)/i.test(resposta);
+}
+
+async function responderComSeguranca(msg, resposta) {
+  try {
+    await msg.reply(resposta);
+  } catch (erro) {
+    console.error("Falha ao responder com reply, tentando mensagem simples:", erro.message);
+    await enviarTextoSeguro(msg.from, resposta);
+  }
+}
+
+function cancelarAvisoInvalido(cliente) {
+  const estado = avisosInvalidos.get(cliente);
+  if (estado?.timer) clearTimeout(estado.timer);
+  avisosInvalidos.delete(cliente);
+}
+
+function agendarAvisoInvalido(cliente, resposta) {
+  const agora = Date.now();
+  let estado = avisosInvalidos.get(cliente);
+  if (estado?.timer) clearTimeout(estado.timer);
+  if (!estado) estado = {ultimoAviso:0};
+  // Após um aviso enviado, evite repetição durante alguns segundos.
+  if (estado.ultimoAviso && agora - estado.ultimoAviso < INTERVALO_AVISO_MS) {
+    avisosInvalidos.set(cliente, estado);
+    return;
+  }
+  estado.resposta = resposta;
+  estado.timer = setTimeout(async () => {
+    estado.timer = null;
+    estado.ultimoAviso = Date.now();
+    try {
+      await enviarTextoSeguro(cliente, estado.resposta);
+    } catch (erro) {
+      console.error("Falha no aviso agrupado:", erro.message);
+    }
+  }, ESPERA_ERRO_MS);
+  avisosInvalidos.set(cliente, estado);
+}
+
 client.on("message", async msg => {
   if (msg.fromMe || msg.from === "status@broadcast" || msg.from.endsWith("@g.us") || msg.type !== "chat") return;
   const entrada = String(msg.body || "").trim();
@@ -72,11 +121,13 @@ client.on("message", async msg => {
     }
 
     const resposta = bot.falar(msg.from, entrada);
-    try {
-      await msg.reply(resposta);
-    } catch (erro) {
-      console.error("Falha ao responder com reply, tentando mensagem simples:", erro.message);
-      await enviarTextoSeguro(msg.from, resposta);
+    // Uma mensagem válida cancela avisos inválidos pendentes desse contato.
+    // As inválidas são agrupadas por um intervalo curto para não inundar o chat.
+    if (ehRespostaInvalida(resposta, entrada, bot.sessoes.get(msg.from))) {
+      agendarAvisoInvalido(msg.from, resposta);
+    } else {
+      cancelarAvisoInvalido(msg.from);
+      await responderComSeguranca(msg, resposta);
     }
   } catch (erro) {
     console.error("Erro ao processar mensagem:", erro.message);
