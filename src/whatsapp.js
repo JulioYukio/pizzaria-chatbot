@@ -35,8 +35,7 @@ client.on("auth_failure", erro => console.error("Falha de autenticação:", erro
 client.on("disconnected", motivo => console.log("Sessão desconectada:", motivo));
 
 function deveEnviarCardapio(entrada, etapa) {
-  if (entrada === "0" && etapa === "ver") return false; // 0 avança à compra
-  return /^(menu|reiniciar|0)$/i.test(entrada) || (entrada === "1" && etapa === "menu");
+  return entrada === "1" && etapa === "menu";
 }
 
 async function enviarTextoSeguro(destino, texto) {

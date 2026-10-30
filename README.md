@@ -112,7 +112,7 @@ O servidor usa a interface de loopback `127.0.0.1`: o endereço funciona **somen
 ### Teste rápido do pedido
 
 1. No chat do simulador, envie `oi` para abrir o menu.
-2. Envie `1` (**Ver cardápio**).
+2. Envie `2` (**Fazer pedido**).
 3. Envie `1` (**Pizzas**).
 4. Envie `16 grande 2` — duas Calabresas grandes.
 5. Confira que o parcial é **R$ 134,00** (R$ 67,00 cada no PDF atualizado).
@@ -125,12 +125,24 @@ O painel web consulta os pedidos gerados por esse próprio simulador. Ao reinici
 
 **Observação:** o simulador web apresenta o cardápio em **texto**. O envio automático do arquivo PDF está implementado no módulo separado do **WhatsApp**, não na interface web.
 
+### Consultar somente o PDF
+
+Na tela inicial, digite `1`. O WhatsApp envia o PDF e o bot exibe somente:
+
+```text
+Tamanhos: B/Broto, M/Média, G/Grande, F/Família.
+Exemplo: 31 G (Jardineira grande)
+Digite 'menu' para voltar.
+```
+
+Nesta tela não há seleção de categoria, quantidade ou adição ao carrinho. Para pedir, use `menu` → `2 - Fazer pedido`.
+
 ### Outras formas de pedir
 
 - `16 G 2` ou `16 grande 2`: informa produto, tamanho e quantidade de uma vez.
 - `16`: mostra ingredientes e preços e pergunta tamanho e quantidade.
 - `16 média`: pergunta apenas a quantidade.
-- Na tela **Ver cardápio**, `0` permite seguir para o pedido sem retornar ao menu.
+- **1 - Ver cardápio:** no WhatsApp, envia o PDF e as instruções de tamanhos; não realiza pedidos nessa opção. Para comprar, digite `menu` e selecione `2 - Fazer pedido`.
 - `34 medoi 3`: o bot sugere **MÉDIA**, mas exige que o cliente reenvie a opção corrigida.
 - `menu` ou `reiniciar`: volta ao início e descarta o carrinho atual.
 - Fora da tela de visualização do catálogo, `0` também reinicia a conversa.
@@ -175,8 +187,8 @@ O bot deve permanecer em execução com o **computador ligado** e o terminal abe
 
 - Responde a **mensagens privadas de texto** recebidas pela conta de teste.
 - Ignora mensagens dos **grupos** e mensagens enviadas pela própria conta.
-- Pode enviar `assets/cardapio.pdf` como **documento** ao selecionar `1 - Ver cardápio` no menu principal ou ao usar comandos de reinício, como `menu`.
-- Alguns comandos de reinício, como `0`, podem provocar **novo envio do PDF**. Isso é comportamento da implementação atual.
+- Envia `assets/cardapio.pdf` como **documento** somente ao selecionar `1 - Ver cardápio` no menu principal.
+- Comandos de reinício, como `menu`, não reenviam o PDF automaticamente.
 - Envia o PDF somente se o arquivo existir com o nome e caminho exatos `assets/cardapio.pdf`.
 
 ## Ajuste de compatibilidade do envio do PDF (WhatsApp)
@@ -229,8 +241,10 @@ Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagen
 | Mensagem enviada pelo cliente | Resultado esperado |
 | --- | --- |
 | `oi` | Exibe o menu inicial |
-| `1` | Envia o PDF e oferece as categorias |
-| `1` | Mostra a lista de pizzas em texto |
+| `1` | Envia o PDF e mostra apenas as instruções de tamanho |
+| `menu` | Retorna ao menu inicial |
+| `2` | Abre Fazer pedido e solicita categoria |
+| `1` | Mostra a lista de pizzas em texto para realizar pedido |
 | `16 grande 2` | Adiciona duas Calabresas grandes: R$ 134,00 |
 | `2` | Mostra o resumo com a opção de finalizar |
 | `1` | Confirma um pedido **fictício**, como `P001` |

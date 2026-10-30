@@ -36,6 +36,7 @@ function analisarTamanho(entrada){
 class Bot {
  constructor(){this.reiniciar();}
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
+ textoCardapio(){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 31 G (Jardineira grande)\nDigite 'menu' para voltar.";}
  menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
  fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  listar(tipo) {
@@ -58,7 +59,7 @@ class Bot {
  falar(cliente,entrada){
    const t=String(entrada??"").trim(),n=Number(t);
    if(!t)return "Digite uma mensagem.";
-   if(!this.sessoes.has(cliente)||/^(menu|reiniciar)$/i.test(t)||(t==="0"&&this.sessoes.get(cliente).etapa!=="ver")){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
+   if(!this.sessoes.has(cliente)||/^(menu|reiniciar)$/i.test(t)||t==="0"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
    const s=this.sessoes.get(cliente);
    if(s.etapa==="escolher109"){
      const escolha=normalizar(t);
@@ -71,21 +72,19 @@ class Bot {
      return this.falar(cliente,pedido.replace(/^109(?=\s|$)/,codigo));
    }
    if(s.etapa==="menu"){
-     if(t==="1"||t==="2"){s.etapa=t==="1"?"categoriaVer":"categoriaComprar";return t==="2"?this.fazerPedido():"Escolha uma categoria:\n1 - Pizzas\n2 - Bebidas";}
+     if(t==="1"){s.etapa="ver";return this.textoCardapio();}
+     if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido();}
      if(t==="3"){s.etapa="consulta";return "Informe o código do pedido (P001):";}
      return "Opção inválida.\n"+this.menu();
    }
-   if(s.etapa==="categoriaVer"||s.etapa==="categoriaComprar"){
+   if(s.etapa==="categoriaComprar"){
      if(t!=="1"&&t!=="2")return "Digite 1 para pizzas ou 2 para bebidas.";
      s.tipo=t==="1"?"pizza":"bebida";
-     s.etapa=s.etapa==="categoriaVer"?"ver":"produto";
-     return this.listar(s.tipo)+(s.etapa==="ver"?"\n0 - Fazer pedido nesta categoria\nOu envie diretamente o código, tamanho e quantidade acima.":"");
+     s.etapa="produto";
+     return this.listar(s.tipo);
    }
-   if(s.etapa==="produto"||s.etapa==="ver"){
-     if(s.etapa==="ver"&&t==="0"){
-       s.etapa="produto";
-       return "🛒 Escolha seu produto pelo código:\n"+this.listar(s.tipo);
-     }
+   if(s.etapa==="ver")return this.textoCardapio();
+   if(s.etapa==="produto"){
      const partes=t.split(/\s+/),id=Number(partes[0]);
      if(s.tipo==="pizza"&&id===109&&!/^109[MC]$/i.test(partes[0])){
        if(partes.length>3)return "Formato inválido. Use: 109 G 2 (código, tamanho e quantidade).";

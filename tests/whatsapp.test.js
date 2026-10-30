@@ -5,76 +5,40 @@ const path=require("node:path");
 const vm=require("node:vm");
 const {Bot}=require("../src/bot");
 
-test("WhatsApp: 0 no catálogo avança sem reenviar imagem ou aviso",async()=>{
- for(const imagemDisponivel of [true,false]){
-  const eventos={},envios=[],respostas=[];
-  const bot=new Bot();
-  class Client {
-   on(evento,handler){eventos[evento]=handler;}
-   async sendMessage(...args){envios.push(args);}
-   async initialize(){}
-  }
-  const dependencias={
-   "node:fs":{existsSync:()=>imagemDisponivel},
-   "node:path":path,
-   "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>"imagem"}},
-   "qrcode-terminal":{},
-   "./bot":{Bot:class {constructor(){return bot;}}}
-  };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
-   require:nome=>{assert.ok(Object.hasOwn(dependencias,nome));return dependencias[nome];},
-   __dirname:path.join(__dirname,"../src"),console,process
-  });
-  async function enviar(body){
-   await eventos.message({from:"a@c.us",type:"chat",body,reply:async texto=>respostas.push(texto)});
-  }
-  for(const texto of ["oi","1","1"])await enviar(texto);
-  assert.equal(envios.length,1);
-  assert.equal(bot.sessoes.get("a@c.us").etapa,"ver");
-  await enviar("0");
-  assert.equal(envios.length,1);
-  assert.equal(bot.sessoes.get("a@c.us").etapa,"produto");
-  assert.match(respostas.at(-1),/Escolha seu produto/);
-  await enviar("16 G 2");assert.match(respostas.at(-1),/Adicionado/);
-  await enviar("0");assert.equal(envios.length,2);
-  assert.equal(bot.sessoes.get("a@c.us").etapa,"menu");
-  await enviar("menu");assert.equal(envios.length,3);
- }
-});
-
-test("WhatsApp: falha no PDF não bloqueia a escolha da categoria",async()=>{
+function ambiente({arquivoExiste=true,falhaPDF=false}={}){
  const eventos={},envios=[],respostas=[];
  const bot=new Bot();
- let opcoes;
- class Client {
-  constructor(opts){opcoes=opts;}
-  on(evento,handler){eventos[evento]=handler;}
-  async sendMessage(destino,conteudo,opts){
-   if(opts?.sendMediaAsDocument)throw new Error("Data passed to getter must include an id property");
-   envios.push({destino,conteudo});
-  }
+ class Client{
+  on(nome,fn){eventos[nome]=fn;}
+  async sendMessage(destino,corpo,opcoes){if(falhaPDF&&opcoes?.sendMediaAsDocument)throw new Error("Falha PDF");envios.push({destino,corpo,opcoes});}
   async initialize(){}
  }
  const dependencias={
-  "node:fs":{existsSync:()=>true},
-  "node:path":path,
+  "node:fs":{existsSync:()=>arquivoExiste},"node:path":path,
   "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({mimetype:"application/pdf"})}},
-  "qrcode-terminal":{},
-  "./bot":{Bot:class {constructor(){return bot;}}}
+  "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
  };
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
   require:nome=>{assert.ok(Object.hasOwn(dependencias,nome),nome);return dependencias[nome];},
   __dirname:path.join(__dirname,"../src"),console,process
  });
- const enviar=async body=>eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)});
- await enviar("oi");
- await enviar("1");
- assert.match(respostas.at(-1),/Escolha uma categoria/);
- assert.equal(bot.sessoes.get("a@c.us").etapa,"categoriaVer");
- assert.ok(envios.some(x=>/Não consegui enviar o PDF/.test(x.conteudo)));
- assert.equal(opcoes.browserName,"Chrome");
- assert.equal(opcoes.deviceName,({win32:"Windows",darwin:"macOS",linux:"Linux"})[process.platform]||"Computador");
- await enviar("1");
- await enviar("16 grande 2");
- assert.match(respostas.at(-1),/Adicionado/);
+ return {bot,envios,respostas,enviar:async body=>eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)})};
+}
+test("opção 1: um PDF e somente instruções, sem lista de sabores",async()=>{
+ const a=ambiente();await a.enviar("oi");await a.enviar("1");
+ assert.equal(a.envios.length,1);assert.equal(a.envios[0].opcoes.sendMediaAsDocument,true);
+ assert.match(a.respostas.at(-1),/Exemplo: 31 G \(Jardineira grande\)/);
+ assert.doesNotMatch(a.respostas.at(-1),/Escolha uma categoria|0 - Fazer pedido|Quantidade|CATÁLOGO COMPLETO/);
+ await a.enviar("31 G 2");assert.equal(a.bot.sessoes.get("a@c.us").itens.length,0);
+ assert.equal(a.envios.length,1);
+ await a.enviar("menu");assert.equal(a.envios.length,1);
+});
+test("opção 2: pedido permanece funcional",async()=>{
+ const a=ambiente();await a.enviar("oi");await a.enviar("2");await a.enviar("1");await a.enviar("16 G 2");
+ assert.match(a.respostas.at(-1),/Adicionado/);assert.equal(a.envios.length,0);
+});
+test("falha no PDF não impede texto",async()=>{
+ const a=ambiente({falhaPDF:true});await a.enviar("oi");await a.enviar("1");
+ assert.match(a.respostas.at(-1),/Exemplo: 31 G/);
+ assert.ok(a.envios.some(x=>/Não consegui enviar o PDF/.test(x.corpo)));
 });
