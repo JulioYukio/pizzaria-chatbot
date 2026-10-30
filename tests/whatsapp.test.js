@@ -41,3 +41,40 @@ test("WhatsApp: 0 no catálogo avança sem reenviar imagem ou aviso",async()=>{
   await enviar("menu");assert.equal(envios.length,3);
  }
 });
+
+test("WhatsApp: falha no PDF não bloqueia a escolha da categoria",async()=>{
+ const eventos={},envios=[],respostas=[];
+ const bot=new Bot();
+ let opcoes;
+ class Client {
+  constructor(opts){opcoes=opts;}
+  on(evento,handler){eventos[evento]=handler;}
+  async sendMessage(destino,conteudo,opts){
+   if(opts?.sendMediaAsDocument)throw new Error("Data passed to getter must include an id property");
+   envios.push({destino,conteudo});
+  }
+  async initialize(){}
+ }
+ const dependencias={
+  "node:fs":{existsSync:()=>true},
+  "node:path":path,
+  "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({mimetype:"application/pdf"})}},
+  "qrcode-terminal":{},
+  "./bot":{Bot:class {constructor(){return bot;}}}
+ };
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
+  require:nome=>{assert.ok(Object.hasOwn(dependencias,nome),nome);return dependencias[nome];},
+  __dirname:path.join(__dirname,"../src"),console,process
+ });
+ const enviar=async body=>eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)});
+ await enviar("oi");
+ await enviar("1");
+ assert.match(respostas.at(-1),/Escolha uma categoria/);
+ assert.equal(bot.sessoes.get("a@c.us").etapa,"categoriaVer");
+ assert.ok(envios.some(x=>/Não consegui enviar o PDF/.test(x.conteudo)));
+ assert.equal(opcoes.browserName,"Chrome");
+ assert.equal(opcoes.deviceName,({win32:"Windows",darwin:"macOS",linux:"Linux"})[process.platform]||"Computador");
+ await enviar("1");
+ await enviar("16 grande 2");
+ assert.match(respostas.at(-1),/Adicionado/);
+});

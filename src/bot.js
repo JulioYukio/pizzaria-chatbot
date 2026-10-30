@@ -36,7 +36,7 @@ function analisarTamanho(entrada){
 class Bot {
  constructor(){this.reiniciar();}
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
- menu(){return "🍕 Pizzaria — PROTÓTIPO, sem vendas reais\n1 - Ver cardápio (imagem no WhatsApp, quando disponível)\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
+ menu(){return "🍕 Pizzaria — PROTÓTIPO, sem vendas reais\n1 - Ver cardápio (PDF pelo WhatsApp)\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
  fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\n\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  listar(tipo) {
    const produtos=this.produtos.filter(p=>p.tipo===tipo);

@@ -179,6 +179,49 @@ O bot deve permanecer em execução com o **computador ligado** e o terminal abe
 - Alguns comandos de reinício, como `0`, podem provocar **novo envio do PDF**. Isso é comportamento da implementação atual.
 - Envia o PDF somente se o arquivo existir com o nome e caminho exatos `assets/cardapio.pdf`.
 
+## Ajuste de compatibilidade do envio do PDF (WhatsApp)
+
+Se o WhatsApp conectar, mas ao selecionar **1 - Ver cardápio** aparecer
+`Data passed to getter must include an id property`, trata-se de uma falha
+conhecida em algumas versões do `whatsapp-web.js` quando envia mídia.
+Referência: https://github.com/wwebjs/whatsapp-web.js/issues/201922
+
+O comando `npm.cmd run whatsapp` agora executa antes um **ajuste local e
+idempotente**, em versões reconhecidas da biblioteca instalada. O ajuste aplica
+a correção pública `delete message.__x_id;` na construção da mensagem de
+mídia, sem modificar os arquivos do nosso chatbot. Em versões diferentes
+a correção é ignorada com aviso, para evitar alterações incompatíveis.
+
+Se mesmo assim o envio falhar, o bot informa que não conseguiu enviar o PDF
+e **continua o atendimento por texto**, permitindo escolher a categoria e pedir
+normalmente. Se houver erro na resposta com citação, o bot tenta responder
+como mensagem simples. O projeto ainda precisa ser testado numa conexão real.
+
+### Nome do dispositivo conectado
+
+O `src/whatsapp.js` usa `deviceName` conforme o sistema operacional que
+executa o Node.js: `Windows`, `macOS` ou `Linux`, com navegador `Chrome`.
+Isso **não muda o sistema operacional real** nem necessariamente renomeia uma
+sessão **já vinculada**. Se a identificação antiga continuar aparecendo,
+confirme qual sessão pertence ao bot, encerre o programa com **Ctrl+C**,
+desconecte **apenas essa sessão** em WhatsApp → Dispositivos conectados,
+e inicie novamente `npm.cmd run whatsapp` para escanear o novo QR Code.
+
+### Personalizar as mensagens de atendimento
+
+As falas ficam principalmente em **`src/bot.js`**:
+
+- `menu()`: saudação e menu inicial.
+- `fazerPedido()`: escolha da categoria e instruções.
+- `listar(tipo)`: apresentação da lista de sabores.
+- `adicionar(...)`: item adicionado, preço parcial e próximos passos.
+- `falar(...)`: demais perguntas, validações, confirmação e consulta.
+
+Em **`src/whatsapp.js`** ficam a legenda do PDF e os avisos específicos
+do WhatsApp. Edite **apenas os textos entre aspas**: não altere variáveis,
+condições, operações de preço ou códigos. Alguns testes validam partes das
+mensagens; depois de editar rode `npm.cmd test`.
+
 ## 8. Teste completo no WhatsApp
 
 Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagens privadas ao número que foi conectado no passo anterior.

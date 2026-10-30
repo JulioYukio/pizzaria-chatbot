@@ -8,6 +8,6 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node --test",
-    "whatsapp": "node src/whatsapp.js"
+    "whatsapp": "node scripts/corrigir-whatsapp-web.js && node src/whatsapp.js"
   }
 }
