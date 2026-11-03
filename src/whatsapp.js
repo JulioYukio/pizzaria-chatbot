@@ -12,17 +12,29 @@ client.on('qr',code=>{console.log('Escaneie com o número de WhatsApp de TESTES:
 client.on('ready',()=>console.log('WhatsApp de teste conectado. Respostas somente a mensagens privadas recebidas.'));
 client.on('auth_failure',e=>console.error('Falha de autenticação:',e));
 client.on('disconnected',reason=>console.log('Sessão desconectada:',reason));
-client.on('message',async msg=>{
- if(msg.fromMe||msg.from==='status@broadcast'||msg.from.endsWith('@g.us')||msg.type!=='chat')return;
+async function responder(msg){
  try{
   if(/^(menu|reiniciar|0|1)$/i.test(String(msg.body||"").trim()) &&
      (/^(menu|reiniciar|0)$/i.test(String(msg.body||"").trim()) ||
-      bot.sessoes.get(msg.from)?.etapa==="menu")){
-   const file=path.join(__dirname,"..","assets","cardapio.png");
-   if(fs.existsSync(file))await client.sendMessage(msg.from,MessageMedia.fromFilePath(file),{caption:"Cardápio — sabores e preços"});
-   else await client.sendMessage(msg.from,"Cardápio em imagem ainda não disponível. Em breve!");
+      bot.sessoes.get(msg.from)?.etapa==="menu") &&
+     !(String(msg.body||"").trim()==="0"&&bot.sessoes.get(msg.from)?.etapa==="ver")){
+   try{
+    const file=path.join(__dirname,"..","assets","cardapio.png");
+    if(fs.existsSync(file))await client.sendMessage(msg.from,MessageMedia.fromFilePath(file),{caption:"Cardápio — sabores e preços"});
+    else await client.sendMessage(msg.from,"Cardápio em imagem ainda não disponível. Em breve!");
+   }catch(e){console.error('Erro ao enviar cardápio:',e?.message||'Falha desconhecida');}
   }
   await msg.reply(bot.falar(msg.from,msg.body));
- }catch(e){console.error('Erro ao responder:',e.message);}
+ }catch(e){console.error('Erro ao responder:',e?.message||'Falha desconhecida');}
+}
+const filas=new Map();
+client.on('message',async msg=>{
+ if(msg.fromMe||msg.from==='status@broadcast'||msg.from.endsWith('@g.us')||msg.type!=='chat')return;
+ // Inclui os envios na fila para preservar a ordem sem bloquear outros contatos.
+ const anterior=filas.get(msg.from)||Promise.resolve();
+ const tarefa=anterior.then(()=>responder(msg));
+ filas.set(msg.from,tarefa);
+ await tarefa;
+ if(filas.get(msg.from)===tarefa)filas.delete(msg.from);
 });
 client.initialize().catch(e=>{console.error('Falha ao iniciar:',e);process.exitCode=1;});

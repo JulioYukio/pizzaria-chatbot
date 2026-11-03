@@ -58,7 +58,7 @@ class Bot {
  falar(cliente,entrada){
    const t=String(entrada??"").trim(),n=Number(t);
    if(!t)return "Digite uma mensagem.";
-   if(!this.sessoes.has(cliente)||/^(menu|reiniciar|0)$/i.test(t)){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
+   if(!this.sessoes.has(cliente)||/^(menu|reiniciar)$/i.test(t)||(t==="0"&&this.sessoes.get(cliente).etapa!=="ver")){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
    const s=this.sessoes.get(cliente);
    if(s.etapa==="menu"){
      if(t==="1"||t==="2"){s.etapa=t==="1"?"categoriaVer":"categoriaComprar";return t==="2"?this.fazerPedido():"Escolha uma categoria:\n1 - Pizzas\n2 - Bebidas";}
@@ -69,10 +69,13 @@ class Bot {
      if(t!=="1"&&t!=="2")return "Digite 1 para pizzas ou 2 para bebidas.";
      s.tipo=t==="1"?"pizza":"bebida";
      s.etapa=s.etapa==="categoriaVer"?"ver":"produto";
-     return this.listar(s.tipo)+(s.etapa==="ver"?"\nPara comprar, digite menu e selecione 2.":"");
+     return this.listar(s.tipo)+(s.etapa==="ver"?"\n0 - Fazer pedido nesta categoria\nOu envie diretamente o código, tamanho e quantidade acima.":"");
    }
    if(s.etapa==="produto"||s.etapa==="ver"){
-     if(s.etapa==="ver")return "Para comprar, digite menu e selecione 2.\n"+this.listar(s.tipo);
+     if(s.etapa==="ver"&&t==="0"){
+       s.etapa="produto";
+       return "🛒 Escolha seu produto pelo código:\n"+this.listar(s.tipo);
+     }
      const partes=t.split(/\s+/),id=Number(partes[0]);
      const p=this.produtos.find(p=>p.id===id&&p.tipo===s.tipo);
      if(!p||!Number.isInteger(id))return "Código inválido. Consulte a lista e digite o número correto.\n"+this.listar(s.tipo);

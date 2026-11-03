@@ -25,6 +25,12 @@ Tamanhos aceitos: `B` (Broto), `M` (Média), `G` (Grande), `F` (Família), ou no
 
 O mesmo fluxo é usado no simulador e no módulo de WhatsApp. O catálogo apresenta nomes resumidos para não tornar a mensagem excessivamente longa, e os ingredientes aparecem quando o cliente envia apenas o código do sabor.
 
+### Do cardápio direto para o pedido
+
+Em `1 - Ver cardápio`, escolha `1 - Pizzas` ou `2 - Bebidas`. No catálogo, envie `0` para começar o pedido **na categoria atual**, sem retornar ao menu principal. Também pode enviar o produto diretamente: `16 G 2`, `16 M` ou apenas `16` para pizzas; `1001 2` ou apenas `1001` para bebidas. O bot pergunta os dados que faltarem e continua com carrinho, confirmação e consulta habituais.
+
+Tamanhos inválidos continuam sendo recusados; sugestões como `34 medoi 3` exigem reenviar o tamanho corrigido antes de adicionar. Quantidade e estoque simulado também são validados. `menu` e `reiniciar` recomeçam a conversa; `0` mantém seu comportamento de reinício fora da tela do catálogo de visualização. No WhatsApp, o `0` dessa tela avança sem reenviar a imagem do cardápio.
+
 ## Início rápido
 
 Instale Node.js 20 ou superior.
