@@ -1,18 +1,40 @@
 "use strict";
-// Integração NÃO OFICIAL. Use conta de testes e mensagens consentidas.
-// Este processo usa o mesmo motor de conversa, mas mantém seus pedidos em memória separada do painel web.
-const fs=require("node:fs");
-const path=require("node:path");
-let Client,LocalAuth,MessageMedia,qr;
-try{({Client,LocalAuth,MessageMedia}=require('whatsapp-web.js'));qr=require('qrcode-terminal');}
-catch{console.error('Dependências opcionais ausentes. Execute: npm install whatsapp-web.js qrcode-terminal');process.exit(1);}
-const {Bot}=require('./bot');const bot=new Bot();
-const client=new Client({authStrategy:new LocalAuth({clientId:'pizzaria-demo'})});
-client.on('qr',code=>{console.log('Escaneie com o número de WhatsApp de TESTES:');qr.generate(code,{small:true});});
-client.on('ready',()=>console.log('WhatsApp de teste conectado. Respostas somente a mensagens privadas recebidas.'));
-client.on('auth_failure',e=>console.error('Falha de autenticação:',e));
-client.on('disconnected',reason=>console.log('Sessão desconectada:',reason));
-const arquivoCardapio=path.join(__dirname,"..","assets","cardapio.png");
+// Integração NÃO OFICIAL. Utilize apenas uma conta de WhatsApp de testes.
+// O WhatsApp e o simulador web possuem pedidos em memória separada.
+const fs = require("node:fs");
+const path = require("node:path");
+const {Bot} = require("./bot");
+
+let Client, LocalAuth, MessageMedia, qr;
+try {
+  ({Client, LocalAuth, MessageMedia} = require("whatsapp-web.js"));
+  qr = require("qrcode-terminal");
+} catch (erro) {
+  console.error("Dependências ausentes. Execute: npm.cmd install whatsapp-web.js qrcode-terminal");
+  console.error(erro?.message || "Falha desconhecida");
+  process.exit(1);
+}
+
+const bot = new Bot();
+// A identificação mostrada nos dispositivos conectados acompanha o sistema do computador.
+// Não é o nome físico do computador; o WhatsApp pode manter o nome da sessão anterior.
+const nomesSistema = {win32:"Windows", darwin:"macOS", linux:"Linux"};
+const sistema = nomesSistema[process.platform] || "Computador";
+const client = new Client({
+  authStrategy: new LocalAuth({clientId:"pizzaria-demo"}),
+  deviceName: sistema,
+  browserName: "Chrome"
+});
+
+client.on("qr", codigo => {
+  console.log("Escaneie o QR Code com o número de WhatsApp de TESTES:");
+  qr.generate(codigo, {small:true});
+});
+client.on("ready", () => console.log("WhatsApp de teste conectado. Respostas somente a mensagens privadas recebidas."));
+client.on("auth_failure", erro => console.error("Falha de autenticação:", erro));
+client.on("disconnected", motivo => console.log("Sessão desconectada:", motivo));
+
+const arquivoCardapio=path.join(__dirname,"..","assets","cardapio.pdf");
 let cacheCardapio=null;
 async function obterCardapio(){
  try{
@@ -29,21 +51,107 @@ async function obterCardapio(){
   throw e;
  }
 }
-async function responder(msg){
- try{
-  if(/^(menu|reiniciar|0|1)$/i.test(String(msg.body||"").trim()) &&
-     (/^(menu|reiniciar|0)$/i.test(String(msg.body||"").trim()) ||
-      bot.sessoes.get(msg.from)?.etapa==="menu") &&
-     !(String(msg.body||"").trim()==="0"&&bot.sessoes.get(msg.from)?.etapa==="ver")){
-   try{
-    const midia=await obterCardapio();
-    if(midia)await client.sendMessage(msg.from,midia,{caption:"Cardápio — sabores e preços"});
-    else await client.sendMessage(msg.from,"Cardápio em imagem ainda não disponível. Em breve!");
-   }catch(e){console.error('Erro ao enviar cardápio:',e?.message||'Falha desconhecida');}
-  }
-  await msg.reply(bot.falar(msg.from,msg.body));
- }catch(e){console.error('Erro ao responder:',e?.message||'Falha desconhecida');}
+
+function deveEnviarCardapio(entrada, etapa) {
+  return entrada === "1" && etapa === "menu";
 }
+
+async function enviarTextoSeguro(destino, texto) {
+  try {
+    await client.sendMessage(destino, texto);
+  } catch (erro) {
+    console.error("Falha ao enviar mensagem de aviso:", erro?.message || "Falha desconhecida");
+  }
+}
+
+
+// Controle individual por contato. Erros seguidos geram somente um aviso.
+const avisosInvalidos = new Map();
+const ESPERA_ERRO_MS = 1500;
+const INTERVALO_AVISO_MS = 8000;
+
+function ehRespostaInvalida(resposta, entrada, etapaAnterior) {
+  if (etapaAnterior === "ver" && !/^(menu|reiniciar|0)$/i.test(entrada)) return true;
+  return /^(Opção inválida\.|Digite 1 ou 2\.|Digite 1 para pizzas|Digite 1 para confirmar|Digite 1 para confirmar ou 2|Código inválido\.|Tamanho inválido\.|Quantidade inválida\.|Formato inválido\.|Escolha um sabor para continuar:|Você quis dizer |Estoque simulado insuficiente\.|Produto indisponível no estoque simulado\.|Pedido não encontrado nesta conversa)/i.test(resposta);
+}
+
+async function responderComSeguranca(msg, resposta) {
+  try {
+    await msg.reply(resposta);
+  } catch (erro) {
+    console.error("Falha ao responder com reply, tentando mensagem simples:", erro?.message || "Falha desconhecida");
+    await enviarTextoSeguro(msg.from, resposta);
+  }
+}
+
+function cancelarAvisoInvalido(cliente) {
+  const estado = avisosInvalidos.get(cliente);
+  if (estado?.timer) clearTimeout(estado.timer);
+  avisosInvalidos.delete(cliente);
+}
+
+function agendarAvisoInvalido(cliente, resposta) {
+  const agora = Date.now();
+  let estado = avisosInvalidos.get(cliente);
+  if (estado?.timer) clearTimeout(estado.timer);
+  if (!estado) estado = {ultimoAviso:0};
+  // Após um aviso enviado, evite repetição durante alguns segundos.
+  if (estado.ultimoAviso && agora - estado.ultimoAviso < INTERVALO_AVISO_MS) {
+    avisosInvalidos.set(cliente, estado);
+    return;
+  }
+  estado.resposta = resposta;
+  estado.timer = setTimeout(async () => {
+    estado.timer = null;
+    estado.ultimoAviso = Date.now();
+    try {
+      await enviarTextoSeguro(cliente, estado.resposta);
+    } catch (erro) {
+      console.error("Falha no aviso agrupado:", erro?.message || "Falha desconhecida");
+    }
+  }, ESPERA_ERRO_MS);
+  avisosInvalidos.set(cliente, estado);
+}
+
+async function responder(msg) {
+  const entrada = String(msg.body || "").trim();
+
+  try {
+    // O envio do arquivo fica separado do processamento da conversa.
+    // Falhas na mídia não devem impedir a resposta do menu.
+    if (deveEnviarCardapio(entrada, bot.sessoes.get(msg.from)?.etapa)) {
+      cancelarAvisoInvalido(msg.from);
+      try {
+        const midia = await obterCardapio();
+        if (!midia) {
+          await enviarTextoSeguro(msg.from, "O PDF do cardápio não foi encontrado em assets/cardapio.pdf. Você ainda pode consultar os sabores por texto.");
+        } else {
+          await client.sendMessage(msg.from, midia, {
+            sendMediaAsDocument: true,
+            caption: "Cardápio completo da pizzaria — sabores e preços."
+          });
+        }
+      } catch (erro) {
+        console.error("Falha ao enviar PDF (verifique a versão do whatsapp-web.js):", erro?.message || "Falha desconhecida");
+        await enviarTextoSeguro(msg.from, "Não consegui enviar o PDF agora. Você pode consultar os sabores pelo chat e continuar seu pedido normalmente.");
+      }
+    }
+
+    const etapaAnterior = bot.sessoes.get(msg.from)?.etapa;
+    const resposta = bot.falar(msg.from, entrada);
+    // Uma mensagem válida cancela avisos inválidos pendentes desse contato.
+    // As inválidas são agrupadas por um intervalo curto para não inundar o chat.
+    if (ehRespostaInvalida(resposta, entrada, etapaAnterior)) {
+      agendarAvisoInvalido(msg.from, resposta);
+    } else {
+      cancelarAvisoInvalido(msg.from);
+      await responderComSeguranca(msg, resposta);
+    }
+  } catch (erro) {
+    console.error("Erro ao processar mensagem:", erro?.message || "Falha desconhecida");
+  }
+}
+
 const filas=new Map();
 const idsPendentes=new Map(),idsConcluidos=new Map();
 const PRAZO_ID_MS=10*60*1000,LIMITE_IDS=1000;
@@ -75,4 +183,8 @@ client.on('message',async msg=>{
   }
  }
 });
-client.initialize().catch(e=>{console.error('Falha ao iniciar:',e);process.exitCode=1;});
+
+client.initialize().catch(erro => {
+  console.error("Falha ao iniciar o WhatsApp:", erro);
+  process.exitCode = 1;
+});

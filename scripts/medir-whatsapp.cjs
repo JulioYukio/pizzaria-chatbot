@@ -11,7 +11,7 @@ const mediana = valores => [...valores].sort((a, b) => a - b)[Math.floor(valores
 async function medir() {
   const tempos = [];
   let corretos = 0, respostas = 0;
-  // Uma rodada de aquecimento e sete amostras. Cada imagem simula 5 ms de rede.
+  // Uma rodada de aquecimento e sete amostras. Cada PDF simula 5 ms de rede.
   for (let rodada = 0; rodada < 8; rodada++) {
     const s = simular({ codigo, enviarMidia: () => aguardar(5) });
     for (let i = 0; i < contatos; i++) s.bot.falar(`cliente${i}@c.us`, "oi");
@@ -20,16 +20,17 @@ async function medir() {
     for (let i = 0; i < contatos; i++) {
       const contato = `cliente${i}@c.us`;
       // Os mesmos textos são produzidos antes/depois; só a ordem deve mudar.
-      tarefas.push(s.enviar("menu", contato), s.enviar("2", contato));
+      tarefas.push(s.enviar("1", contato), s.enviar("menu", contato));
     }
     await Promise.all(tarefas);
     const duracao = performance.now() - inicio;
     if (rodada > 0) tempos.push(duracao);
-    corretos = [...s.bot.sessoes.values()].filter(s => s.etapa === "categoriaComprar").length;
+    corretos = [...s.bot.sessoes.values()].filter(s => s.etapa === "menu").length;
     respostas = s.respostas.length;
   }
   const f = simular({ codigo, enviarMidia: async () => { throw new Error("Falha simulada de mídia"); } });
-  await Promise.all(Array.from({ length: contatos }, (_, i) => f.enviar("menu", `cliente${i}@c.us`)));
+  for (let i = 0; i < contatos; i++) f.bot.falar(`cliente${i}@c.us`, "oi");
+  await Promise.all(Array.from({ length: contatos }, (_, i) => f.enviar("1", `cliente${i}@c.us`)));
   const ms = mediana(tempos);
   console.log(JSON.stringify({
     node: process.version, contatos, mensagensPorRodada: contatos * 2,

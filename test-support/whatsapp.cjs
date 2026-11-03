@@ -23,6 +23,7 @@ function simular({
   }
 } = {}) {
   const eventos = {}, envios = [], respostas = [], erros = [];
+  const relogios = new Map(); let proximoRelogio = 0;
   const bot = new Bot();
   class Client {
     on(evento, handler) { eventos[evento] = handler; }
@@ -41,6 +42,8 @@ function simular({
     __dirname: path.join(__dirname, "../src"),
     console: { log() {}, error: (...args) => erros.push(args) },
     process,
+    setTimeout: fn => { const id=++proximoRelogio; relogios.set(id,fn); return id; },
+    clearTimeout: id => relogios.delete(id),
     Date: class extends Date { static now() { return agora(); } }
   });
   vm.runInContext(codigo, contexto);
@@ -51,7 +54,11 @@ function simular({
       ...extras
     });
   }
-  return { bot, envios, respostas, erros, enviar, contexto };
+  async function dispararAvisos(){
+    const tarefas=[...relogios.values()];relogios.clear();
+    for(const tarefa of tarefas)await tarefa();
+  }
+  return { bot, envios, respostas, erros, enviar, contexto, relogios, dispararAvisos };
 }
 
 module.exports = { adiar, simular };

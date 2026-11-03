@@ -1,5 +1,7 @@
 # Otimização de média e baixa prioridade
 
+> Atualização de integração: os conflitos com `main` foram conciliados preservando o PDF, os 79 sabores/17 bebidas, preços e menus atuais. Os resultados de desempenho abaixo são o registro histórico da otimização antes dessa integração. A validação combinada está registrada no final deste documento.
+
 Base de continuação: `fd3e171`, branch `fix/whatsapp-confiabilidade`. A `main` possui mudanças independentes de menu/PDF e não será sobrescrita ou mesclada à força. As correções de alta prioridade já estão nesta branch e serão preservadas.
 
 ## Plano por impacto, risco e complexidade
@@ -75,3 +77,13 @@ Testes e suporte: `tests/bot.test.js`, `tests/whatsapp.test.js`, `tests/painel.t
 Medições e registro: `scripts/medir-motor.cjs`, `scripts/medir-painel.cjs`, este relatório.
 
 API HTTP, catálogo, manifesto, autenticação e persistência existente não foram modificados. Não foi removida nenhuma dependência: os dois pacotes referenciados são usados pelo conector.
+
+## Integração com a main
+
+Base incorporada: `5a42a0a`. Mantidos o PDF como documento na opção 1, instruções sem pedido nessa tela, seleção do sabor 109, catálogo/preços atualizados, identificação do sistema e correção idempotente da biblioteca. O servidor, catálogo, PDF e manifesto são idênticos aos da main. Reaplicadas as otimizações do motor, cache de mídia agora para PDF, fila/deduplicação e painel.
+
+Corrigidas inconsistências verificadas em testes: a classificação de entrada inválida usa a etapa anterior à transição para não atrasar as instruções iniciais do PDF; o teste de `0` passou a refletir o reinício que o código da main já fazia; e a opção válida do PDF cancela aviso inválido antes de aguardar a mídia. A última corrida foi confirmada por revisão independente e teve teste observado falhando antes da correção.
+
+Os testes da main foram mantidos e combinados com os testes de otimização; os antigos testes de compra na tela de visualização foram substituídos pelos da regra atual (PDF/instruções nessa opção). Não houve acesso ou alteração ao stash do usuário.
+
+Validação combinada: `npm.cmd test`, 41/41 aprovados. Simulação atualizada para opção 1/PDF seguida de menu: 200/200 conversas na etapa correta, 400 respostas normais e 200 respostas textuais mantidas no cenário de falha de mídia. O teste do catálogo confirma preços atuais; o pedido de duas Calabresas grandes e uma Coca-Cola 2L totaliza R$ 151,00. Comparação de arquivos confirmou catálogo, PDF, servidor e manifesto idênticos à base incorporada.

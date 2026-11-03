@@ -1,11 +1,18 @@
 {
+  "fonte": "Cardápio - A Fornalha (12).pdf, 5 páginas",
+  "observacoes": [
+    "O PDF repete o código impresso 109 para M&M's e Churros. No sistema, M&M's = 109 (109M) e Churros = 120 (109C); consulta do código 109 sozinho pede esclarecimento.",
+    "A pizza Light/Tarantela (101) e refrigerante em lata não aparecem no PDF e foram retirados.",
+    "O PDF agrupa algumas bebidas sem códigos; mantidos códigos internos 1001-1018, com itens e preços efetivamente listados."
+  ],
   "pizzas": [
     {
       "id": 1,
+      "codigoImpresso": 1,
       "nome": "Alho",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "alho crocante, muçarela, parmesão",
+      "ingredientes": "alho crocante, muçarela e parmesão",
       "precosCentavos": {
         "BROTO": 4500,
         "MÉDIA": 5500,
@@ -15,10 +22,11 @@
     },
     {
       "id": 2,
+      "codigoImpresso": 2,
       "nome": "Aliche Argentino",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "filés de anchovas, muçarela, tomate, parmesão",
+      "ingredientes": "filés de anchovas, muçarela, tomate e parmesão",
       "precosCentavos": {
         "BROTO": 5500,
         "MÉDIA": 6500,
@@ -28,10 +36,11 @@
     },
     {
       "id": 3,
+      "codigoImpresso": 3,
       "nome": "Americana",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "muçarela, presunto cozido, azeitonas picadas",
+      "ingredientes": "muçarela, presunto cozido e azeitonas picadas",
       "precosCentavos": {
         "BROTO": 4300,
         "MÉDIA": 5400,
@@ -41,36 +50,25 @@
     },
     {
       "id": 4,
+      "codigoImpresso": 4,
       "nome": "A Moda da Casa",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "atum sólido em pedaços, muçarela, ervilha fresca, cebola, bacon",
+      "ingredientes": "atum sólido em pedaços, muçarela, ervilha fresca, cebola e bacon",
       "precosCentavos": {
-        "BROTO": 5200,
-        "MÉDIA": 6500,
-        "GRANDE": 7500,
-        "FAMÍLIA": 8500
-      }
-    },
-    {
-      "id": 5,
-      "nome": "Argentina",
-      "categoria": "salgada",
-      "tipo": "pizza",
-      "ingredientes": "atum sólido em pedaços, provolone, cebola",
-      "precosCentavos": {
-        "BROTO": 5200,
+        "BROTO": 5300,
         "MÉDIA": 6300,
         "GRANDE": 7400,
         "FAMÍLIA": 8400
       }
     },
     {
-      "id": 6,
-      "nome": "Atum Sólido",
+      "id": 5,
+      "codigoImpresso": 5,
+      "nome": "Argentina",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "atum sólido em pedaços, cebola",
+      "ingredientes": "atum sólido em pedaços, provolone e cebola",
       "precosCentavos": {
         "BROTO": 4800,
         "MÉDIA": 5800,
@@ -79,11 +77,12 @@
       }
     },
     {
-      "id": 7,
-      "nome": "Bacon",
+      "id": 6,
+      "codigoImpresso": 6,
+      "nome": "Atum Sólido",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "muçarela, bacon, ovos",
+      "ingredientes": "atum sólido em pedaços e cebola",
       "precosCentavos": {
         "BROTO": 4500,
         "MÉDIA": 5700,
@@ -92,24 +91,12 @@
       }
     },
     {
-      "id": 8,
-      "nome": "Baiacatu",
+      "id": 7,
+      "codigoImpresso": 7,
+      "nome": "Bacon",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "calabresa moída, catupiry, cebola",
-      "precosCentavos": {
-        "BROTO": 4400,
-        "MÉDIA": 5600,
-        "GRANDE": 6500,
-        "FAMÍLIA": 7500
-      }
-    },
-    {
-      "id": 9,
-      "nome": "Baiana",
-      "categoria": "salgada",
-      "tipo": "pizza",
-      "ingredientes": "calabresa moída, pimenta, cebola, ovos",
+      "ingredientes": "muçarela, bacon e ovos",
       "precosCentavos": {
         "BROTO": 4000,
         "MÉDIA": 5000,
@@ -118,11 +105,12 @@
       }
     },
     {
-      "id": 10,
-      "nome": "Baiana 2",
+      "id": 8,
+      "codigoImpresso": 8,
+      "nome": "Baiacatu",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "calabresa moída, muçarela, pimenta, parmesão",
+      "ingredientes": "calabresa moída, catupiry e cebola",
       "precosCentavos": {
         "BROTO": 4400,
         "MÉDIA": 5600,
@@ -131,11 +119,12 @@
       }
     },
     {
-      "id": 11,
-      "nome": "Berinjela",
+      "id": 9,
+      "codigoImpresso": 9,
+      "nome": "Baiana",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "berinjela refogada no azeite, muçarela, cebola",
+      "ingredientes": "calabresa moída, pimenta, cebola e ovos",
       "precosCentavos": {
         "BROTO": 4200,
         "MÉDIA": 5200,
@@ -144,11 +133,12 @@
       }
     },
     {
-      "id": 12,
-      "nome": "Brasileira",
+      "id": 10,
+      "codigoImpresso": 10,
+      "nome": "Baiana 2",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "atum sólido em pedaços, muçarela, cebola",
+      "ingredientes": "calabresa moída, muçarela, pimenta e parmesão",
       "precosCentavos": {
         "BROTO": 5200,
         "MÉDIA": 6400,
@@ -157,11 +147,12 @@
       }
     },
     {
-      "id": 13,
-      "nome": "Brasileira 2",
+      "id": 11,
+      "codigoImpresso": 11,
+      "nome": "Berinjela",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "atum sólido em pedaços, catupiry, cebola",
+      "ingredientes": "berinjela refogada no azeite, muçarela e cebola",
       "precosCentavos": {
         "BROTO": 5500,
         "MÉDIA": 6600,
@@ -170,11 +161,12 @@
       }
     },
     {
-      "id": 14,
-      "nome": "Brócolis",
+      "id": 12,
+      "codigoImpresso": 12,
+      "nome": "Brasileira",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "brócolis refogado no azeite, muçarela",
+      "ingredientes": "atum sólido em pedaços, muçarela e cebola",
       "precosCentavos": {
         "BROTO": 4300,
         "MÉDIA": 5400,
@@ -183,11 +175,12 @@
       }
     },
     {
-      "id": 15,
-      "nome": "Caipira",
+      "id": 13,
+      "codigoImpresso": 13,
+      "nome": "Brasileira 2",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "peito de frango desfiado, milho, catupiry",
+      "ingredientes": "atum sólido em pedaços, catupiry e cebola",
       "precosCentavos": {
         "BROTO": 4500,
         "MÉDIA": 5500,
@@ -196,11 +189,12 @@
       }
     },
     {
-      "id": 16,
-      "nome": "Calabresa",
+      "id": 14,
+      "codigoImpresso": 14,
+      "nome": "Brócolis",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "calabresa fatiada, cebola",
+      "ingredientes": "brócolis refogado no azeite e muçarela",
       "precosCentavos": {
         "BROTO": 4000,
         "MÉDIA": 5000,
@@ -209,11 +203,12 @@
       }
     },
     {
-      "id": 17,
-      "nome": "Camarão",
+      "id": 15,
+      "codigoImpresso": 15,
+      "nome": "Caipira",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "camarão graúdo refogado no azeite, catupiry original",
+      "ingredientes": "peito de frango desfiado, milho e catupiry",
       "precosCentavos": {
         "BROTO": 5500,
         "MÉDIA": 6500,
@@ -222,11 +217,40 @@
       }
     },
     {
+      "id": 16,
+      "codigoImpresso": 16,
+      "nome": "Calabresa",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "calabresa fatiada e cebola",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 5700,
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
+      }
+    },
+    {
+      "id": 17,
+      "codigoImpresso": 17,
+      "nome": "Camarão",
+      "categoria": "salgada",
+      "tipo": "pizza",
+      "ingredientes": "camarão graúdo refogado no azeite e catupiry original",
+      "precosCentavos": {
+        "BROTO": 5500,
+        "MÉDIA": 6800,
+        "GRANDE": 8500,
+        "FAMÍLIA": 9500
+      }
+    },
+    {
       "id": 18,
+      "codigoImpresso": 18,
       "nome": "Canadense",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "lombo canadense, cebola, catupiry",
+      "ingredientes": "lombo canadense, cebola e catupiry",
       "precosCentavos": {
         "BROTO": 4600,
         "MÉDIA": 5700,
@@ -236,10 +260,11 @@
     },
     {
       "id": 19,
+      "codigoImpresso": 19,
       "nome": "Carbonara",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "calabresa fatiada, champignon, muçarela, ervilha fresca, ovos",
+      "ingredientes": "calabresa fatiada, champignon, muçarela, ervilha fresca e ovos",
       "precosCentavos": {
         "BROTO": 4600,
         "MÉDIA": 5800,
@@ -249,10 +274,11 @@
     },
     {
       "id": 20,
+      "codigoImpresso": 20,
       "nome": "Carne Seca",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "carne seca refogada, muçarela, cebola",
+      "ingredientes": "carne seca refogada, muçarela e cebola",
       "precosCentavos": {
         "BROTO": 4800,
         "MÉDIA": 6000,
@@ -262,10 +288,11 @@
     },
     {
       "id": 21,
+      "codigoImpresso": 21,
       "nome": "Carne Seca 2",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "carne seca refogada, catupiry, cebola",
+      "ingredientes": "carne seca refogada, catupiry e cebola",
       "precosCentavos": {
         "BROTO": 4900,
         "MÉDIA": 6100,
@@ -275,10 +302,11 @@
     },
     {
       "id": 22,
+      "codigoImpresso": 22,
       "nome": "Catumilho",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "catupiry, milho",
+      "ingredientes": "catupiry e milho",
       "precosCentavos": {
         "BROTO": 4400,
         "MÉDIA": 5500,
@@ -288,10 +316,11 @@
     },
     {
       "id": 23,
+      "codigoImpresso": 23,
       "nome": "Catupiry",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "catupiry, tomate fatiado",
+      "ingredientes": "catupiry e tomate fatiado",
       "precosCentavos": {
         "BROTO": 4500,
         "MÉDIA": 5500,
@@ -301,10 +330,11 @@
     },
     {
       "id": 24,
+      "codigoImpresso": 24,
       "nome": "Crocante",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "muçarela, batata palha crocante",
+      "ingredientes": "muçarela coberta com batata palha crocante",
       "precosCentavos": {
         "BROTO": 4300,
         "MÉDIA": 5300,
@@ -314,10 +344,11 @@
     },
     {
       "id": 25,
+      "codigoImpresso": 25,
       "nome": "Dois Queijos",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "muçarela, catupiry",
+      "ingredientes": "muçarela e catupiry",
       "precosCentavos": {
         "BROTO": 4400,
         "MÉDIA": 5500,
@@ -327,10 +358,11 @@
     },
     {
       "id": 26,
+      "codigoImpresso": 26,
       "nome": "Escarola",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "escarola refogada no azeite, muçarela, cebola",
+      "ingredientes": "escarola refogada no azeite, muçarela e cebola",
       "precosCentavos": {
         "BROTO": 4200,
         "MÉDIA": 5200,
@@ -340,10 +372,11 @@
     },
     {
       "id": 27,
+      "codigoImpresso": 27,
       "nome": "Escarola 2",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "escarola refogada no azeite, bacon, muçarela",
+      "ingredientes": "escarola refogada no azeite, bacon e muçarela",
       "precosCentavos": {
         "BROTO": 4500,
         "MÉDIA": 5500,
@@ -353,10 +386,11 @@
     },
     {
       "id": 28,
+      "codigoImpresso": 28,
       "nome": "Francesa",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "presunto cozido, bacon, catupiry",
+      "ingredientes": "presunto cozido, bacon e catupiry",
       "precosCentavos": {
         "BROTO": 4300,
         "MÉDIA": 5600,
@@ -366,23 +400,25 @@
     },
     {
       "id": 29,
+      "codigoImpresso": 29,
       "nome": "Frangalho",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "frango desfiado, muçarela, alho crocante",
+      "ingredientes": "frango desfiado, muçarela e alho crocante",
       "precosCentavos": {
         "BROTO": 4300,
         "MÉDIA": 5600,
-        "GRANDE": 6500,
-        "FAMÍLIA": 7500
+        "GRANDE": 6700,
+        "FAMÍLIA": 7700
       }
     },
     {
       "id": 30,
+      "codigoImpresso": 30,
       "nome": "Galeto",
       "categoria": "salgada",
       "tipo": "pizza",
-      "ingredientes": "frango desfiado, milho, tomate, queijo cheddar",
+      "ingredientes": "frango desfiado, milho, tomate e queijo cheddar",
       "precosCentavos": {
         "BROTO": 4600,
         "MÉDIA": 5700,
@@ -392,6 +428,7 @@
     },
     {
       "id": 31,
+      "codigoImpresso": 31,
       "nome": "Jardineira",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -405,6 +442,7 @@
     },
     {
       "id": 32,
+      "codigoImpresso": 32,
       "nome": "Lombinho",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -418,6 +456,7 @@
     },
     {
       "id": 33,
+      "codigoImpresso": 33,
       "nome": "Marguerita",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -431,6 +470,7 @@
     },
     {
       "id": 34,
+      "codigoImpresso": 34,
       "nome": "Milho",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -438,12 +478,13 @@
       "precosCentavos": {
         "BROTO": 4300,
         "MÉDIA": 5400,
-        "GRANDE": 6300,
-        "FAMÍLIA": 7300
+        "GRANDE": 6400,
+        "FAMÍLIA": 7400
       }
     },
     {
       "id": 35,
+      "codigoImpresso": 35,
       "nome": "Muçarela de Búfala",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -457,6 +498,7 @@
     },
     {
       "id": 36,
+      "codigoImpresso": 36,
       "nome": "Muçarela",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -465,11 +507,12 @@
         "BROTO": 4000,
         "MÉDIA": 5000,
         "GRANDE": 5990,
-        "FAMÍLIA": 6990
+        "FAMÍLIA": 6900
       }
     },
     {
       "id": 37,
+      "codigoImpresso": 37,
       "nome": "Napolitana",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -483,6 +526,7 @@
     },
     {
       "id": 38,
+      "codigoImpresso": 38,
       "nome": "Palmito",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -496,6 +540,7 @@
     },
     {
       "id": 39,
+      "codigoImpresso": 39,
       "nome": "Namorados",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -509,19 +554,21 @@
     },
     {
       "id": 40,
+      "codigoImpresso": 40,
       "nome": "Parisiense",
       "categoria": "salgada",
       "tipo": "pizza",
       "ingredientes": "frango desfiado, ervilha fresca, palmito e muçarela",
       "precosCentavos": {
-        "BROTO": 4600,
-        "MÉDIA": 5900,
-        "GRANDE": 6900,
-        "FAMÍLIA": 7900
+        "BROTO": 4800,
+        "MÉDIA": 6000,
+        "GRANDE": 6800,
+        "FAMÍLIA": 7800
       }
     },
     {
       "id": 41,
+      "codigoImpresso": 41,
       "nome": "Peito de Peru",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -535,6 +582,7 @@
     },
     {
       "id": 42,
+      "codigoImpresso": 42,
       "nome": "Peito de Peru 2",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -548,6 +596,7 @@
     },
     {
       "id": 43,
+      "codigoImpresso": 43,
       "nome": "Pepperoni",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -561,6 +610,7 @@
     },
     {
       "id": 44,
+      "codigoImpresso": 44,
       "nome": "Peruana",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -574,6 +624,7 @@
     },
     {
       "id": 45,
+      "codigoImpresso": 45,
       "nome": "Pizzaiolo",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -587,6 +638,7 @@
     },
     {
       "id": 46,
+      "codigoImpresso": 46,
       "nome": "Portuguesa",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -600,6 +652,7 @@
     },
     {
       "id": 47,
+      "codigoImpresso": 47,
       "nome": "Quatro Queijos",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -613,6 +666,7 @@
     },
     {
       "id": 48,
+      "codigoImpresso": 48,
       "nome": "Siciliana",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -626,6 +680,7 @@
     },
     {
       "id": 49,
+      "codigoImpresso": 49,
       "nome": "Toscana",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -639,12 +694,13 @@
     },
     {
       "id": 50,
+      "codigoImpresso": 50,
       "nome": "Três Terços",
       "categoria": "salgada",
       "tipo": "pizza",
       "ingredientes": "três sabores de pizzas a sua escolha (exceto camarão e parma)",
       "precosCentavos": {
-        "BROTO": 6500,
+        "BROTO": 4600,
         "MÉDIA": 6500,
         "GRANDE": 7500,
         "FAMÍLIA": 8500
@@ -652,6 +708,7 @@
     },
     {
       "id": 51,
+      "codigoImpresso": 51,
       "nome": "Três Queijos",
       "categoria": "salgada",
       "tipo": "pizza",
@@ -665,6 +722,7 @@
     },
     {
       "id": 52,
+      "codigoImpresso": 52,
       "nome": "A Fornalha",
       "categoria": "especial",
       "tipo": "pizza",
@@ -678,6 +736,7 @@
     },
     {
       "id": 53,
+      "codigoImpresso": 53,
       "nome": "Brócolis Especial",
       "categoria": "especial",
       "tipo": "pizza",
@@ -691,6 +750,7 @@
     },
     {
       "id": 54,
+      "codigoImpresso": 54,
       "nome": "Cinco Queijos",
       "categoria": "especial",
       "tipo": "pizza",
@@ -704,19 +764,21 @@
     },
     {
       "id": 55,
+      "codigoImpresso": 55,
       "nome": "Criativa",
       "categoria": "especial",
       "tipo": "pizza",
       "ingredientes": "monte sua pizza com até quatro ingredientes (exceto camarão e parma)",
       "precosCentavos": {
-        "BROTO": 5200,
-        "MÉDIA": 6200,
-        "GRANDE": 7200,
-        "FAMÍLIA": 8200
+        "BROTO": 5500,
+        "MÉDIA": 6500,
+        "GRANDE": 7500,
+        "FAMÍLIA": 8500
       }
     },
     {
       "id": 56,
+      "codigoImpresso": 56,
       "nome": "Escarola Especial",
       "categoria": "especial",
       "tipo": "pizza",
@@ -730,6 +792,7 @@
     },
     {
       "id": 57,
+      "codigoImpresso": 57,
       "nome": "Portuguesa Especial",
       "categoria": "especial",
       "tipo": "pizza",
@@ -743,6 +806,7 @@
     },
     {
       "id": 58,
+      "codigoImpresso": 58,
       "nome": "Tropical",
       "categoria": "especial",
       "tipo": "pizza",
@@ -756,19 +820,21 @@
     },
     {
       "id": 59,
+      "codigoImpresso": 59,
       "nome": "Rúcula",
       "categoria": "especial",
       "tipo": "pizza",
       "ingredientes": "rúcula hidropônica, tomate seco e muçarela de búfala",
       "precosCentavos": {
         "BROTO": 4500,
-        "MÉDIA": 5700,
-        "GRANDE": 6700,
+        "MÉDIA": 6000,
+        "GRANDE": 7000,
         "FAMÍLIA": 7700
       }
     },
     {
       "id": 60,
+      "codigoImpresso": 60,
       "nome": "Toronto",
       "categoria": "especial",
       "tipo": "pizza",
@@ -782,6 +848,7 @@
     },
     {
       "id": 61,
+      "codigoImpresso": 61,
       "nome": "Vegetariana",
       "categoria": "especial",
       "tipo": "pizza",
@@ -795,6 +862,7 @@
     },
     {
       "id": 62,
+      "codigoImpresso": 62,
       "nome": "Bolonhesa",
       "categoria": "especial",
       "tipo": "pizza",
@@ -808,19 +876,21 @@
     },
     {
       "id": 63,
+      "codigoImpresso": 63,
       "nome": "Estrogonofe",
       "categoria": "especial",
       "tipo": "pizza",
       "ingredientes": "carne em tiras, muçarela, champignon, parmesão e batata palha crocante",
       "precosCentavos": {
-        "BROTO": 5200,
-        "MÉDIA": 6200,
-        "GRANDE": 7200,
-        "FAMÍLIA": 8200
+        "BROTO": 5500,
+        "MÉDIA": 6500,
+        "GRANDE": 7500,
+        "FAMÍLIA": 8500
       }
     },
     {
       "id": 107,
+      "codigoImpresso": 107,
       "nome": "Hot Dog",
       "categoria": "especial",
       "tipo": "pizza",
@@ -834,7 +904,8 @@
     },
     {
       "id": 108,
-      "nome": "Hamburguer Picanha",
+      "codigoImpresso": 108,
+      "nome": "Hambúrguer de Picanha",
       "categoria": "especial",
       "tipo": "pizza",
       "ingredientes": "hamburguer de picanha, muçarela, tomate e alface",
@@ -847,6 +918,7 @@
     },
     {
       "id": 110,
+      "codigoImpresso": 110,
       "nome": "Lombo Especial",
       "categoria": "especial",
       "tipo": "pizza",
@@ -860,7 +932,8 @@
     },
     {
       "id": 111,
-      "nome": "Coração Alcachofra",
+      "codigoImpresso": 111,
+      "nome": "Coração de Alcachofra",
       "categoria": "especial",
       "tipo": "pizza",
       "ingredientes": "alcachofra, muçarela de búfala, manjericão fresco e azeitonas pretas fatiadas",
@@ -873,10 +946,11 @@
     },
     {
       "id": 112,
+      "codigoImpresso": 112,
       "nome": "Presunto Parma",
       "categoria": "especial",
       "tipo": "pizza",
-      "ingredientes": "parma, coração de alcachofra, muçarela de búfala, manjericão e azeitonas pretas fatiadas",
+      "ingredientes": "parma, coração de alcachofra, muçarela de búfala, manjericão, azeitonas pretas fatiadas",
       "precosCentavos": {
         "BROTO": 5500,
         "MÉDIA": 6800,
@@ -886,6 +960,7 @@
     },
     {
       "id": 113,
+      "codigoImpresso": 113,
       "nome": "Alho Negro",
       "categoria": "especial",
       "tipo": "pizza",
@@ -898,20 +973,50 @@
       }
     },
     {
-      "id": 101,
-      "nome": "Tarantela (Light)",
-      "categoria": "Light",
+      "id": 114,
+      "codigoImpresso": 114,
+      "nome": "Carne Louca",
+      "categoria": "especial",
       "tipo": "pizza",
-      "ingredientes": "queijo fresco, rúcula hidropônica e tomate seco",
+      "ingredientes": "carne desfiada, mussarela e pimenta biquinho",
       "precosCentavos": {
-        "BROTO": 3600,
-        "MÉDIA": 4600,
-        "GRANDE": 5600,
-        "FAMÍLIA": 6600
+        "BROTO": 5200,
+        "MÉDIA": 6200,
+        "GRANDE": 7200,
+        "FAMÍLIA": 8200
+      }
+    },
+    {
+      "id": 115,
+      "codigoImpresso": 115,
+      "nome": "Frango Especial",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "frango, cream cheese e pimenta biquinho",
+      "precosCentavos": {
+        "BROTO": 4600,
+        "MÉDIA": 6000,
+        "GRANDE": 7000,
+        "FAMÍLIA": 8000
+      }
+    },
+    {
+      "id": 116,
+      "codigoImpresso": 116,
+      "nome": "Temaki de Atum",
+      "categoria": "especial",
+      "tipo": "pizza",
+      "ingredientes": "atum, cheam cheese, cebolinha e molho tarê",
+      "precosCentavos": {
+        "BROTO": 5200,
+        "MÉDIA": 6200,
+        "GRANDE": 7200,
+        "FAMÍLIA": 8200
       }
     },
     {
       "id": 102,
+      "codigoImpresso": 102,
       "nome": "Banana (Doce)",
       "categoria": "doce",
       "tipo": "pizza",
@@ -925,6 +1030,7 @@
     },
     {
       "id": 103,
+      "codigoImpresso": 103,
       "nome": "Romeu e Julieta",
       "categoria": "doce",
       "tipo": "pizza",
@@ -938,6 +1044,7 @@
     },
     {
       "id": 104,
+      "codigoImpresso": 104,
       "nome": "Sensação",
       "categoria": "doce",
       "tipo": "pizza",
@@ -951,6 +1058,7 @@
     },
     {
       "id": 105,
+      "codigoImpresso": 105,
       "nome": "Floresta Negra",
       "categoria": "doce",
       "tipo": "pizza",
@@ -964,6 +1072,7 @@
     },
     {
       "id": 106,
+      "codigoImpresso": 106,
       "nome": "Casal 20",
       "categoria": "doce",
       "tipo": "pizza",
@@ -977,6 +1086,7 @@
     },
     {
       "id": 109,
+      "codigoImpresso": 109,
       "nome": "M&M's",
       "categoria": "doce",
       "tipo": "pizza",
@@ -990,6 +1100,7 @@
     },
     {
       "id": 120,
+      "codigoImpresso": 109,
       "nome": "Churros",
       "categoria": "doce",
       "tipo": "pizza",
@@ -1005,6 +1116,7 @@
   "bebidas": [
     {
       "id": 1001,
+      "codigoImpresso": null,
       "nome": "Coca-Cola 2L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1012,6 +1124,7 @@
     },
     {
       "id": 1002,
+      "codigoImpresso": null,
       "nome": "Coca-Cola Zero 2L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1019,6 +1132,7 @@
     },
     {
       "id": 1003,
+      "codigoImpresso": null,
       "nome": "Sprite 2L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1026,6 +1140,7 @@
     },
     {
       "id": 1004,
+      "codigoImpresso": null,
       "nome": "Fanta Laranja 2L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1033,6 +1148,7 @@
     },
     {
       "id": 1005,
+      "codigoImpresso": null,
       "nome": "Fanta Uva 2L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1040,13 +1156,15 @@
     },
     {
       "id": 1006,
-      "nome": "Fanta Guaraná 2L",
+      "codigoImpresso": null,
+      "nome": "Guaraná 2L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
       "precoCentavos": 1500
     },
     {
       "id": 1007,
+      "codigoImpresso": null,
       "nome": "Sucos 1L",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1054,6 +1172,7 @@
     },
     {
       "id": 1008,
+      "codigoImpresso": null,
       "nome": "Coca-Cola 600ml",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1061,20 +1180,15 @@
     },
     {
       "id": 1009,
+      "codigoImpresso": null,
       "nome": "Refrigerante 600ml (Outros)",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
       "precoCentavos": 1000
     },
     {
-      "id": 1010,
-      "nome": "Refrigerante em lata",
-      "categoria": "nao_alcoolica",
-      "tipo": "bebida",
-      "precoCentavos": 600
-    },
-    {
       "id": 1011,
+      "codigoImpresso": null,
       "nome": "Água sem gás 500ml",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1082,6 +1196,7 @@
     },
     {
       "id": 1012,
+      "codigoImpresso": null,
       "nome": "Água com gás 500ml",
       "categoria": "nao_alcoolica",
       "tipo": "bebida",
@@ -1089,6 +1204,7 @@
     },
     {
       "id": 1013,
+      "codigoImpresso": null,
       "nome": "Cerveja Budweiser",
       "categoria": "alcoolica",
       "tipo": "bebida",
@@ -1096,6 +1212,7 @@
     },
     {
       "id": 1014,
+      "codigoImpresso": null,
       "nome": "Cerveja Eisenbahn",
       "categoria": "alcoolica",
       "tipo": "bebida",
@@ -1103,6 +1220,7 @@
     },
     {
       "id": 1015,
+      "codigoImpresso": null,
       "nome": "Cerveja Stella Artois",
       "categoria": "alcoolica",
       "tipo": "bebida",
@@ -1110,6 +1228,7 @@
     },
     {
       "id": 1016,
+      "codigoImpresso": null,
       "nome": "Cerveja Heineken",
       "categoria": "alcoolica",
       "tipo": "bebida",
@@ -1117,6 +1236,7 @@
     },
     {
       "id": 1017,
+      "codigoImpresso": null,
       "nome": "Vinho da Casa (Seco)",
       "categoria": "alcoolica",
       "tipo": "bebida",
@@ -1124,6 +1244,7 @@
     },
     {
       "id": 1018,
+      "codigoImpresso": null,
       "nome": "Vinho da Casa (Suave)",
       "categoria": "alcoolica",
       "tipo": "bebida",
