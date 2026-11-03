@@ -1,12 +1,10 @@
 "use strict";
 const original = require("./cardapio.json");
 const tamanhos = ["BROTO", "MÉDIA", "GRANDE", "FAMÍLIA"];
-const dinheiro = centavos => (centavos / 100).toLocaleString("pt-BR", {style:"currency",currency:"BRL"});
+const moeda = new Intl.NumberFormat("pt-BR", {style:"currency",currency:"BRL"});
+const dinheiro = centavos => moeda.format(centavos / 100);
 const normalizar = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
-function tamanhoDe(token) {
- const t=normalizar(token||"");
- return ({B:"BROTO",BROTO:"BROTO",M:"MÉDIA",MEDIA:"MÉDIA",G:"GRANDE",GRANDE:"GRANDE",F:"FAMÍLIA",FAMILIA:"FAMÍLIA"})[t]||null;
-}
+const tamanhosPorNome={B:"BROTO",BROTO:"BROTO",M:"MÉDIA",MEDIA:"MÉDIA",G:"GRANDE",GRANDE:"GRANDE",F:"FAMÍLIA",FAMILIA:"FAMÍLIA"};
 
 const opcoesTamanho="B - Broto | M - Média | G - Grande | F - Família";
 function distancia(a,b){
@@ -23,9 +21,9 @@ function distancia(a,b){
 }
 function analisarTamanho(entrada){
  const texto=normalizar(String(entrada||"").trim());
- const exatos={B:"BROTO",BROTO:"BROTO",M:"MÉDIA",MEDIA:"MÉDIA",G:"GRANDE",GRANDE:"GRANDE",F:"FAMÍLIA",FAMILIA:"FAMÍLIA"};
+  const exatos=tamanhosPorNome;
  if(exatos[texto])return {tamanho:exatos[texto]};
- if(texto.length<4)return {};
+  if(texto.length<4||texto.length>9)return {};
  const candidatos=["BROTO","MEDIA","GRANDE","FAMILIA"].map(t=>({nome:t,dist:distancia(texto,t)})).sort((a,b)=>a.dist-b.dist);
  if(candidatos[0].dist<=2&&(!candidatos[1]||candidatos[0].dist<candidatos[1].dist)){
   return {sugestao:exatos[candidatos[0].nome]};
@@ -48,9 +46,9 @@ class Bot {
  total(s){return s.itens.reduce((a,i)=>a+i.preco*i.quantidade,0);}
  adicionar(s,p,tamanho,quantidade){
    if(!Number.isInteger(quantidade)||quantidade<1||quantidade>10)return "Quantidade inválida. Use de 1 a 10 unidades.";
-   const ja=s.itens.filter(i=>i.id===p.id).reduce((a,i)=>a+i.quantidade,0);
+   let ja=0,atual;
+   for(const item of s.itens){if(item.id===p.id){ja+=item.quantidade;if(item.tamanho===tamanho)atual=item;}}
    if(p.estoque<ja+quantidade)return "Estoque simulado insuficiente. Disponível: "+Math.max(0,p.estoque-ja);
-   const atual=s.itens.find(i=>i.id===p.id&&i.tamanho===tamanho);
    if(atual)atual.quantidade+=quantidade;
    else s.itens.push({id:p.id,nome:p.nome,tamanho,preco:tamanho?p.precosCentavos[tamanho]:p.precoCentavos,quantidade});
    s.etapa="mais";
@@ -137,7 +135,9 @@ class Bot {
    if(s.etapa==="confirmar"){
      if(t==="2"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return "Pedido cancelado. Digite menu.";}
      if(t!=="1")return "Digite 1 para confirmar ou 2 para cancelar.";
-     if(!s.itens.every(i=>this.produtos.find(p=>p.id===i.id).estoque>=s.itens.filter(j=>j.id===i.id).reduce((a,j)=>a+j.quantidade,0))){
+      const quantidades=new Map();
+      for(const item of s.itens)quantidades.set(item.id,(quantidades.get(item.id)||0)+item.quantidade);
+      if(![...quantidades].every(([id,quantidade])=>this.produtos.find(p=>p.id===id).estoque>=quantidade)){
        this.sessoes.set(cliente,{etapa:"menu",itens:[]});return "Estoque mudou. Pedido cancelado. Digite menu.";
      }
      const pedido={codigo:"P"+String(this.sequencia++).padStart(3,"0"),cliente,itens:structuredClone(s.itens),total:this.total(s),status:"recebido",demonstracao:true};

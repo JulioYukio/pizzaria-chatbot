@@ -14,7 +14,7 @@ function ambiente({arquivoExiste=true,falhaPDF=false}={}){
   async initialize(){}
  }
  const dependencias={
-  "node:fs":{existsSync:()=>arquivoExiste},"node:path":path,
+  "node:fs":{existsSync:()=>arquivoExiste,promises:{stat:async()=>{if(!arquivoExiste)throw Object.assign(new Error("Ausente"),{code:"ENOENT"});return {mtimeMs:1,ctimeMs:1,size:10};}}},"node:path":path,
   "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({mimetype:"application/pdf"})}},
   "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
  };
@@ -53,7 +53,7 @@ test("várias mensagens inválidas geram um aviso, sem avalanche",async()=>{
   async initialize(){}
  }
  const deps={
-  "node:fs":{existsSync:()=>false},"node:path":path,
+  "node:fs":{existsSync:()=>false,promises:{stat:async()=>{throw Object.assign(new Error("Ausente"),{code:"ENOENT"});}}},"node:path":path,
   "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({})}},
   "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
  };
@@ -83,7 +83,7 @@ test("mensagem válida cancela erro pendente e só responde ao acerto",async()=>
   async initialize(){}
  }
  const deps={
-  "node:fs":{existsSync:()=>false},"node:path":path,
+  "node:fs":{existsSync:()=>false,promises:{stat:async()=>{throw Object.assign(new Error("Ausente"),{code:"ENOENT"});}}},"node:path":path,
   "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({})}},
   "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
  };

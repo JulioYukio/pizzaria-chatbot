@@ -1,4 +1,15 @@
 const test=require("node:test");const assert=require("node:assert/strict");const {Bot}=require("../src/bot");
+test("pedido completo atualizado, consulta restrita ao cliente e cancelamento",()=>{
+ const b=new Bot();
+ for(const t of ["oi","2","1","16 G 2","1","2","1001 1","2","1"])b.falar("a",t);
+ assert.equal(b.pedidos[0].total,15100);
+ assert.equal(b.produtos.find(p=>p.id===16).estoque,8);
+ b.falar("a","3");assert.match(b.falar("a","P001"),/recebido/);
+ b.falar("b","oi");b.falar("b","3");assert.match(b.falar("b","P001"),/não encontrado/);
+ for(const t of ["menu","2","1","16 G 1","2","2"])b.falar("a",t);
+ assert.equal(b.pedidos.length,1);
+ assert.equal(b.produtos.find(p=>p.id===16).estoque,8);
+});
 function abrir(b){b.falar("a","oi");b.falar("a","2");return b.falar("a","1");}
 test("PDF: 79 pizzas, 17 bebidas, Calabresa grande 67 reais",()=>{const b=new Bot();assert.equal(b.produtos.filter(p=>p.tipo==="pizza").length,79);assert.equal(b.produtos.filter(p=>p.tipo==="bebida").length,17);assert.equal(b.produtos.find(p=>p.id===16).precosCentavos.GRANDE,6700);});
 test("código 109 solicita escolha e preserva tamanho e quantidade",()=>{for(const [escolha,nome] of [["1","M&M"],["2","Churros"]]){const b=new Bot();abrir(b);assert.match(b.falar("a","109 G 2"),/Qual sabor/);assert.equal(b.sessoes.get("a").itens.length,0);assert.match(b.falar("a",escolha),/Adicionado/);assert.match(b.sessoes.get("a").itens[0].nome,new RegExp(nome));assert.equal(b.sessoes.get("a").itens[0].quantidade,2);assert.equal(b.sessoes.get("a").itens[0].tamanho,"GRANDE");}});
@@ -14,6 +25,26 @@ test("opção 1 mostra apenas instruções do PDF, sem pedido nem quantidade",()
  const b=new Bot();b.falar("a","oi");const msg=b.falar("a","1");
  assert.equal(msg,"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\\nExemplo: 31 G (Jardineira grande)\\nDigite 'menu' para voltar.".replaceAll("\\n","\n"));
  assert.equal(b.sessoes.get("a").etapa,"ver");
- for(const entrada of ["31 G","31 G 2","0"]){assert.equal(b.falar("a",entrada),b.textoCardapio());assert.equal(b.sessoes.get("a").itens.length,0);}
+ for(const entrada of ["31 G","31 G 2"]){assert.equal(b.falar("a",entrada),b.textoCardapio());assert.equal(b.sessoes.get("a").itens.length,0);}
+ assert.equal(b.falar("a","0"),b.menu());
  assert.equal(b.falar("a","menu"),b.menu());
+});
+
+test("confirmação agrega tamanhos do mesmo produto e revalida estoque concorrente",()=>{
+ const b=new Bot();
+ for(const t of ["oi","2","1","16 G 3","1","1","16 M 2","2"])b.falar("a",t);
+ assert.equal(b.sessoes.get("a").etapa,"confirmar");
+ // Outro cliente usa parte do saldo antes da confirmação do primeiro.
+ for(const t of ["oi","2","1","16 G 6","2","1"])b.falar("b",t);
+ assert.equal(b.produtos.find(p=>p.id===16).estoque,4);
+ assert.match(b.falar("a","1"),/Estoque mudou/);
+ assert.equal(b.pedidos.length,1);
+ assert.equal(b.produtos.find(p=>p.id===16).estoque,4);
+});
+test("catálogo mantém moeda e preços enquanto erros longos não alteram o carrinho",()=>{
+ const b=new Bot();
+ assert.match(b.listar("bebida"),/R\$\s*17,00|R\$\s*\d+,\d{2}/);
+ for(const t of ["oi","2","1"])b.falar("a",t);
+ assert.match(b.falar("a","16 "+"x".repeat(1000)+" 2"),/Tamanho inválido/);
+ assert.equal(b.sessoes.get("a").itens.length,0);
 });

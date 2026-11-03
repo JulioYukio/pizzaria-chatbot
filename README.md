@@ -145,7 +145,7 @@ Nesta tela não há seleção de categoria, quantidade ou adição ao carrinho. 
 - **1 - Ver cardápio:** no WhatsApp, envia o PDF e as instruções de tamanhos; não realiza pedidos nessa opção. Para comprar, digite `menu` e selecione `2 - Fazer pedido`.
 - `34 medoi 3`: o bot sugere **MÉDIA**, mas exige que o cliente reenvie a opção corrigida.
 - `menu` ou `reiniciar`: volta ao início e descarta o carrinho atual.
-- Fora da tela de visualização do catálogo, `0` também reinicia a conversa.
+- `0` também reinicia a conversa em qualquer etapa.
 
 Para encerrar o simulador no terminal, pressione **Ctrl+C**.
 
