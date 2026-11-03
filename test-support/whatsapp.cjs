@@ -15,7 +15,12 @@ function simular({
   codigo = fs.readFileSync(path.join(__dirname, "../src/whatsapp.js"), "utf8"),
   imagemDisponivel = true,
   prepararImagem = () => "imagem",
-  enviarMidia = async () => {}
+  enviarMidia = async () => {},
+  agora = () => Date.now(),
+  metadados = async () => {
+    if (!imagemDisponivel) throw Object.assign(new Error("Arquivo ausente"), {code:"ENOENT"});
+    return {mtimeMs:1, ctimeMs:1, size:10};
+  }
 } = {}) {
   const eventos = {}, envios = [], respostas = [], erros = [];
   const bot = new Bot();
@@ -25,7 +30,7 @@ function simular({
     async initialize() {}
   }
   const dependencias = {
-    "node:fs": { existsSync: () => imagemDisponivel },
+    "node:fs": { existsSync: () => imagemDisponivel, promises:{stat:metadados} },
     "node:path": path,
     "whatsapp-web.js": { Client, LocalAuth: class {}, MessageMedia: { fromFilePath: prepararImagem } },
     "qrcode-terminal": {},
@@ -35,7 +40,8 @@ function simular({
     require: nome => { assert.ok(Object.hasOwn(dependencias, nome)); return dependencias[nome]; },
     __dirname: path.join(__dirname, "../src"),
     console: { log() {}, error: (...args) => erros.push(args) },
-    process
+    process,
+    Date: class extends Date { static now() { return agora(); } }
   });
   vm.runInContext(codigo, contexto);
   function enviar(body, from = "a@c.us", extras = {}) {

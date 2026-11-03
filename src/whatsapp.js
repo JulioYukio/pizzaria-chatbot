@@ -12,6 +12,23 @@ client.on('qr',code=>{console.log('Escaneie com o número de WhatsApp de TESTES:
 client.on('ready',()=>console.log('WhatsApp de teste conectado. Respostas somente a mensagens privadas recebidas.'));
 client.on('auth_failure',e=>console.error('Falha de autenticação:',e));
 client.on('disconnected',reason=>console.log('Sessão desconectada:',reason));
+const arquivoCardapio=path.join(__dirname,"..","assets","cardapio.png");
+let cacheCardapio=null;
+async function obterCardapio(){
+ try{
+  const info=await fs.promises.stat(arquivoCardapio);
+  const versao=`${info.mtimeMs}:${info.ctimeMs}:${info.size}`;
+  if(cacheCardapio?.versao!==versao){
+   cacheCardapio=null;
+   cacheCardapio={versao,midia:MessageMedia.fromFilePath(arquivoCardapio)};
+  }
+  return cacheCardapio.midia;
+ }catch(e){
+  cacheCardapio=null;
+  if(e?.code==='ENOENT')return null;
+  throw e;
+ }
+}
 async function responder(msg){
  try{
   if(/^(menu|reiniciar|0|1)$/i.test(String(msg.body||"").trim()) &&
@@ -19,8 +36,8 @@ async function responder(msg){
       bot.sessoes.get(msg.from)?.etapa==="menu") &&
      !(String(msg.body||"").trim()==="0"&&bot.sessoes.get(msg.from)?.etapa==="ver")){
    try{
-    const file=path.join(__dirname,"..","assets","cardapio.png");
-    if(fs.existsSync(file))await client.sendMessage(msg.from,MessageMedia.fromFilePath(file),{caption:"Cardápio — sabores e preços"});
+    const midia=await obterCardapio();
+    if(midia)await client.sendMessage(msg.from,midia,{caption:"Cardápio — sabores e preços"});
     else await client.sendMessage(msg.from,"Cardápio em imagem ainda não disponível. Em breve!");
    }catch(e){console.error('Erro ao enviar cardápio:',e?.message||'Falha desconhecida');}
   }
@@ -28,13 +45,34 @@ async function responder(msg){
  }catch(e){console.error('Erro ao responder:',e?.message||'Falha desconhecida');}
 }
 const filas=new Map();
+const idsPendentes=new Map(),idsConcluidos=new Map();
+const PRAZO_ID_MS=10*60*1000,LIMITE_IDS=1000;
+function limparIds(agora){
+ for(const [id,prazo] of idsConcluidos){
+  if(prazo>agora&&idsConcluidos.size<=LIMITE_IDS)break;
+  idsConcluidos.delete(id);
+ }
+}
 client.on('message',async msg=>{
  if(msg.fromMe||msg.from==='status@broadcast'||msg.from.endsWith('@g.us')||msg.type!=='chat')return;
+ const serial=msg.id?._serialized;
+ const id=typeof serial==='string'&&serial.length>0&&serial.length<=256?JSON.stringify([msg.from,serial]):null;
+ if(id){
+  const agora=Date.now();limparIds(agora);
+  if(idsPendentes.has(id))return idsPendentes.get(id);
+  if(idsConcluidos.get(id)>agora)return;
+ }
  // Inclui os envios na fila para preservar a ordem sem bloquear outros contatos.
  const anterior=filas.get(msg.from)||Promise.resolve();
  const tarefa=anterior.then(()=>responder(msg));
  filas.set(msg.from,tarefa);
- await tarefa;
- if(filas.get(msg.from)===tarefa)filas.delete(msg.from);
+ if(id)idsPendentes.set(id,tarefa);
+ try{await tarefa;}finally{
+  if(filas.get(msg.from)===tarefa)filas.delete(msg.from);
+  if(id){
+   idsPendentes.delete(id);
+   const agora=Date.now();idsConcluidos.set(id,agora+PRAZO_ID_MS);limparIds(agora);
+  }
+ }
 });
 client.initialize().catch(e=>{console.error('Falha ao iniciar:',e);process.exitCode=1;});

@@ -1,6 +1,24 @@
 const test=require("node:test");
 const assert=require("node:assert/strict");
 const {Bot}=require("../src/bot");
+test("confirmação agrega tamanhos do mesmo produto e revalida estoque concorrente",()=>{
+ const b=new Bot();
+ for(const t of ["oi","2","1","16 G 3","1","1","16 M 2","2"])b.falar("a",t);
+ assert.equal(b.sessoes.get("a").etapa,"confirmar");
+ // Outro cliente usa parte do saldo antes da confirmação do primeiro.
+ for(const t of ["oi","2","1","16 G 6","2","1"])b.falar("b",t);
+ assert.equal(b.produtos.find(p=>p.id===16).estoque,4);
+ assert.match(b.falar("a","1"),/Estoque mudou/);
+ assert.equal(b.pedidos.length,1);
+ assert.equal(b.produtos.find(p=>p.id===16).estoque,4);
+});
+test("catálogo mantém moeda e preços enquanto erros longos não alteram o carrinho",()=>{
+ const b=new Bot();
+ assert.match(b.listar("bebida"),/R\$\s*17,00|R\$\s*\d+,\d{2}/);
+ for(const t of ["oi","2","1"])b.falar("a",t);
+ assert.match(b.falar("a","16 "+"x".repeat(1000)+" 2"),/Tamanho inválido/);
+ assert.equal(b.sessoes.get("a").itens.length,0);
+});
 function verCatalogo(b,tipo="1",cliente="a"){
  for(const texto of ["oi","1"])b.falar(cliente,texto);
  return b.falar(cliente,tipo);

@@ -3,6 +3,58 @@ const assert=require("node:assert/strict");
 const vm=require("node:vm");
 const {adiar,simular}=require("../test-support/whatsapp.cjs");
 
+test("WhatsApp: reutiliza uma mídia e recarrega se o arquivo mudar ou reaparecer",async()=>{
+ let leituras=0,versao=1,existe=true;
+ const s=simular({prepararImagem:()=>`imagem${++leituras}`,metadados:async()=>{
+  if(!existe)throw Object.assign(new Error("Ausente"),{code:"ENOENT"});
+  return {mtimeMs:versao,ctimeMs:versao,size:10};
+ }});
+ for(let i=0;i<100;i++)await s.enviar("menu");
+ assert.equal(leituras,1);
+ assert.equal(s.envios.length,100);
+ versao++;await s.enviar("menu");assert.equal(leituras,2);
+ existe=false;await s.enviar("menu");assert.match(s.envios.at(-1)[1],/ainda não disponível/);
+ existe=true;await s.enviar("menu");assert.equal(leituras,3);
+ assert.equal(s.respostas.length,103);
+});
+
+test("WhatsApp: evento repetido não avança a conversa duas vezes, mesmo enfileirado",async()=>{
+ const s=simular();await s.enviar("oi");
+ const id={_serialized:"mensagem-2"};
+ await Promise.all([s.enviar("2","a@c.us",{id}),s.enviar("2","a@c.us",{id})]);
+ await s.enviar("2","a@c.us",{id});
+ assert.equal(s.bot.sessoes.get("a@c.us").etapa,"categoriaComprar");
+ assert.equal(s.respostas.length,2);
+ await s.enviar("oi","b@c.us",{id});
+ assert.equal(s.bot.sessoes.get("b@c.us").etapa,"menu");
+});
+
+test("WhatsApp: confirmação repetida registra só um pedido e decrementa estoque uma vez",async()=>{
+ const s=simular();
+ for(const t of ["oi","2","1","16 G 2","2"])await s.enviar(t);
+ const id={_serialized:"confirmacao"};
+ await s.enviar("1","a@c.us",{id});
+ const n=s.respostas.length;
+ await s.enviar("1","a@c.us",{id});
+ assert.equal(s.bot.pedidos.length,1);
+ assert.equal(s.bot.produtos.find(p=>p.id===16).estoque,8);
+ assert.equal(s.respostas.length,n);
+});
+
+test("WhatsApp: deduplicação expira e libera IDs antigos com memória limitada",async()=>{
+ let agora=1000;
+ const s=simular({agora:()=>agora});
+ await s.enviar("oi","a@c.us",{id:{_serialized:"antigo"}});
+ await s.enviar("oi","a@c.us",{id:{_serialized:"antigo"}});
+ assert.equal(s.respostas.length,1);
+ agora+=600001;
+ await s.enviar("oi","a@c.us",{id:{_serialized:"antigo"}});
+ assert.equal(s.respostas.length,2);
+ for(let i=0;i<1100;i++)await s.enviar("oi","a@c.us",{id:{_serialized:String(i)}});
+ assert.equal(vm.runInContext("idsConcluidos.size",s.contexto),1000);
+ assert.equal(vm.runInContext("idsPendentes.size",s.contexto),0);
+});
+
 test("WhatsApp: 0 no catálogo avança sem reenviar imagem ou aviso",async()=>{
  for(const imagemDisponivel of [true,false]){
   const {bot,envios,respostas,enviar}=simular({imagemDisponivel});
