@@ -29,7 +29,7 @@ function ambiente({arquivoExiste=true,falhaPDF=false}={}){
 test("opção 1: PDF e pedido imediato de pizza",async()=>{
  const a=ambiente();await a.enviar("oi");await a.enviar("1");
  assert.equal(a.envios.length,1);assert.equal(a.envios[0].opcoes.sendMediaAsDocument,true);
- assert.match(a.respostas.at(-1),/exemplo: 31 G/i \(Jardineira grande\)/);
+ assert.match(a.respostas.at(-1),/exemplo: 31 G/i);
  assert.doesNotMatch(a.respostas.at(-1),/Escolha uma categoria|0 - Fazer pedido|CATÁLOGO COMPLETO/);
  assert.equal(a.bot.sessoes.get("a@c.us").etapa,"produto");
  await a.enviar("31 G");assert.match(a.respostas.at(-1),/Quantas unidades/);
@@ -44,7 +44,7 @@ test("opção 2: pedido permanece funcional",async()=>{
 });
 test("falha no PDF não impede texto",async()=>{
  const a=ambiente({falhaPDF:true});await a.enviar("oi");await a.enviar("1");
- assert.match(a.respostas.at(-1),/exemplo: 31 G/i/);
+ assert.match(a.respostas.at(-1),/exemplo: 31 G/i);
  assert.ok(a.envios.some(x=>/Não consegui enviar o PDF/.test(x.corpo)));
 });
 
@@ -136,7 +136,7 @@ test("não responde nem altera sessão para conversas arquivadas",async()=>{
  assert.match(respostas.at(-1),/A Fornalha/);
  await enviar("1");
  assert.equal(envios.length,1);
- assert.match(respostas.at(-1),/exemplo: 31 G/i/);
+ assert.match(respostas.at(-1),/exemplo: 31 G/i);
  arquivado=true;
  await enviar("2");
  assert.equal(bot.sessoes.get("a@c.us").etapa,"produto");
