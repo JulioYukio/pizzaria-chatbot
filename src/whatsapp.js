@@ -53,7 +53,7 @@ async function obterCardapio(){
 }
 
 function deveEnviarCardapio(entrada, etapa) {
-  return entrada === "1" && etapa === "menu";
+  return entrada === "1" && (etapa === "menu" || etapa === "categoriaComprar");
 }
 
 async function enviarTextoSeguro(destino, texto) {

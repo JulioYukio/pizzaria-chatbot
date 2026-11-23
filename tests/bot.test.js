@@ -19,7 +19,7 @@ test("erro no tamanho pede confirmação",()=>{const b=new Bot();abrir(b);assert
 
 test("código 109 sem tamanho continua perguntando tamanho",()=>{const b=new Bot();abrir(b);assert.match(b.falar("a","109"),/Qual sabor/);assert.match(b.falar("a","2"),/Ingredientes/);assert.equal(b.sessoes.get("a").etapa,"tamanho");});
 test("escolha inválida mantém seleção de sabores",()=>{const b=new Bot();abrir(b);b.falar("a","109 M 3");assert.match(b.falar("a","invalido"),/Escolha um sabor/);assert.equal(b.sessoes.get("a").etapa,"escolher109");assert.match(b.falar("a","Churros"),/Adicionado/);});
-test("mensagens personalizadas",()=>{const b=new Bot();assert.match(b.menu(),/A Fornalha Pizzaria — PROTÓTIPO/);b.falar("a","oi");b.falar("a","2");assert.match(b.falar("a","1"),/duas pizzas de calabresa grande/);});
+test("mensagens personalizadas",()=>{const b=new Bot();assert.match(b.menu(),/A Fornalha Pizzaria — PROTÓTIPO/);b.falar("a","oi");b.falar("a","2");assert.match(b.falar("a","1"),/Para fazer seu pedido/);});
 
 test("opção 1 permite pedido imediato após o PDF",()=>{
  const b=new Bot();b.falar("a","oi");const texto=b.falar("a","1");
@@ -59,4 +59,27 @@ test("catálogo mantém moeda e preços enquanto erros longos não alteram o car
  for(const t of ["oi","2","1"])b.falar("a",t);
  assert.match(b.falar("a","16 "+"x".repeat(1000)+" 2"),/Tamanho inválido/);
  assert.equal(b.sessoes.get("a").itens.length,0);
+});
+
+test("ao escolher Pizzas em Fazer pedido, mostra orientações do PDF sem lista de sabores",()=>{
+ const b=new Bot();
+ b.falar("a","oi");b.falar("a","2");
+ const texto=b.falar("a","1");
+ assert.equal(texto,b.textoCardapio());
+ assert.doesNotMatch(texto,/CATÁLOGO COMPLETO|1 - Alho|79 pizzas/);
+ assert.equal(b.sessoes.get("a").etapa,"produto");
+ assert.match(b.falar("a","55 G"),/Criativa GRANDE/);
+ assert.match(b.falar("a","2"),/Adicionado: 2x Criativa GRANDE/);
+ // O carrinho não é perdido ao adicionar outra pizza.
+ b.falar("a","1");
+ assert.equal(b.falar("a","1"),b.textoCardapio());
+ assert.match(b.falar("a","31 G 1"),/Adicionado: 1x Jardineira GRANDE/);
+ assert.equal(b.sessoes.get("a").itens.length,2);
+});
+test("bebidas permanecem listadas em texto após Fazer pedido",()=>{
+ const b=new Bot();b.falar("a","oi");b.falar("a","2");
+ const msg=b.falar("a","2");
+ assert.match(msg,/BEBIDAS/);
+ assert.match(msg,/1002 - Coca-Cola Zero 2L/);
+ assert.match(b.falar("a","1002 4"),/Adicionado: 4x Coca-Cola Zero 2L/);
 });

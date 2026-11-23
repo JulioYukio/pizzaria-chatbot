@@ -135,7 +135,7 @@ Para fazer seu pedido, informe o código da pizza e o tamanho, como neste exempl
 Digite 'menu' para voltar.
 ```
 
-O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. A opção `2 - Fazer pedido` continua disponível, inclusive para bebidas.
+O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. Na opção `2 - Fazer pedido`, a categoria `1 - Pizzas` também envia o mesmo PDF e as mesmas instruções, sem mostrar a lista longa de sabores em texto. A categoria `2 - Bebidas` continua listando as bebidas com códigos e preços em texto.
 
 ### Outras formas de pedir
 
@@ -192,7 +192,7 @@ O bot de WhatsApp responde apenas a **conversas privadas não arquivadas**. Ante
 
 - Responde a **mensagens privadas de texto** recebidas pela conta de teste.
 - Ignora mensagens dos **grupos** e mensagens enviadas pela própria conta.
-- Envia `assets/cardapio.pdf` como **documento** somente ao selecionar `1 - Ver cardápio` no menu principal.
+- Envia `assets/cardapio.pdf` como **documento** tanto ao selecionar `1 - Ver cardápio` no menu principal quanto ao escolher `1 - Pizzas` dentro de **Fazer pedido**; bebidas continuam listadas em texto.
 - Comandos de reinício, como `menu`, não reenviam o PDF automaticamente.
 - Envia o PDF somente se o arquivo existir com o nome e caminho exatos `assets/cardapio.pdf`.
 
@@ -262,7 +262,7 @@ Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagen
 | `1` | Envia o PDF e orienta como começar o pedido de pizza pelo código e tamanho |
 | `menu` | Retorna ao menu inicial |
 | `2` | Abre Fazer pedido e solicita categoria |
-| `1` | Mostra a lista de pizzas em texto para realizar pedido |
+| `1` | Na categoria Pizzas, envia o PDF e apresenta instruções para pedir por código e tamanho |
 | `16 grande 2` | Adiciona duas Calabresas grandes: R$ 134,00 |
 | `2` | Mostra o resumo com a opção de finalizar |
 | `1` | Confirma um pedido **fictício**, como `P001` |

@@ -38,6 +38,7 @@ class Bot {
  menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
  fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  listar(tipo) {
+   if(tipo==="pizza")return this.textoCardapio();
    const produtos=this.produtos.filter(p=>p.tipo===tipo);
    const titulo=tipo==="pizza"?"🍕 CATÁLOGO COMPLETO — PIZZAS":"🥤 BEBIDAS";
    const linhas=produtos.map(p=>(p.id===109?"109M":p.id===120?"109C / 120":p.id)+" - "+p.nome+(p.tipo==="bebida"?" — "+dinheiro(p.precoCentavos):""));
@@ -79,7 +80,7 @@ class Bot {
      if(t!=="1"&&t!=="2")return "Digite 1 para pizzas ou 2 para bebidas.";
      s.tipo=t==="1"?"pizza":"bebida";
      s.etapa="produto";
-     return this.listar(s.tipo);
+     return s.tipo==="pizza"?this.textoCardapio():this.listar(s.tipo);
    }
    if(s.etapa==="produto"){
      const partes=t.split(/\s+/),id=Number(partes[0]);

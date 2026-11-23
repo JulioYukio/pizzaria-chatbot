@@ -164,3 +164,28 @@ test("falha ao consultar chat bloqueia resposta por segurança",async()=>{
  assert.equal(respostas.length,0);
  assert.equal(bot.sessoes.size,0);
 });
+
+test("categoria Pizzas envia PDF em vez de catálogo em texto",async()=>{
+ const a=ambiente();await a.enviar("oi");await a.enviar("2");await a.enviar("1");
+ assert.equal(a.envios.length,1);
+ assert.equal(a.envios[0].opcoes.sendMediaAsDocument,true);
+ assert.match(a.respostas.at(-1),/Para fazer seu pedido, informe o código da pizza/);
+ assert.doesNotMatch(a.respostas.at(-1),/CATÁLOGO COMPLETO|1 - Alho/);
+ await a.enviar("55 G");
+ assert.match(a.respostas.at(-1),/Criativa GRANDE/);
+ await a.enviar("2");
+ assert.match(a.respostas.at(-1),/Adicionado: 2x Criativa GRANDE/);
+ await a.enviar("1");
+ await a.enviar("1");
+ assert.equal(a.envios.length,2);
+ await a.enviar("31 G 1");
+ assert.match(a.respostas.at(-1),/Jardineira GRANDE/);
+});
+test("categoria Bebidas mantém catálogo em texto e não envia PDF",async()=>{
+ const a=ambiente();await a.enviar("oi");await a.enviar("2");await a.enviar("2");
+ assert.equal(a.envios.length,0);
+ assert.match(a.respostas.at(-1),/BEBIDAS/);
+ assert.match(a.respostas.at(-1),/1002 - Coca-Cola Zero 2L/);
+ await a.enviar("1002 4");
+ assert.match(a.respostas.at(-1),/Adicionado: 4x Coca-Cola Zero 2L/);
+});
