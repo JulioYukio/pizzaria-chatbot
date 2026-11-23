@@ -137,7 +137,7 @@ test("não responde nem altera sessão para conversas arquivadas",async()=>{
  arquivado=true;
  await enviar("2");
  assert.equal(bot.sessoes.get("a@c.us").etapa,"ver");
- assert.equal(respostas.length,3);
+ assert.equal(respostas.length,2);
 });
 test("falha ao consultar chat bloqueia resposta por segurança",async()=>{
  const eventos={},respostas=[];
