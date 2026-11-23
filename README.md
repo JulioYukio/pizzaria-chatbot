@@ -147,7 +147,7 @@ No resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha 
 - **1 - Ver cardápio:** envia o PDF no WhatsApp e já permite pedir pizza pelo código e tamanho, por exemplo `31 G`; o chatbot pergunta a quantidade em seguida.
 - `34 medoi 3`: o bot sugere **MÉDIA**, mas exige que o cliente reenvie a opção corrigida.
 - `menu`: volta ao início sem apagar o carrinho; no menu, digite `3 - Ver pedido atual` para recuperar o resumo. `reiniciar` ou `0`: descarta o carrinho atual.
-- Com produtos no carrinho, `9 - Cancelar adição e finalizar pedido` aparece na escolha de categoria e nas categorias de pizzas e bebidas; retorna ao resumo sem adicionar produtos.
+- Nas listas de pizzas e bebidas, `8 - Voltar à escolha de categoria` volta à tela anterior sem perder o carrinho. Com produtos no carrinho, `9 - Cancelar adição e finalizar pedido` aparece uma única vez e retorna ao resumo sem adicionar produtos.
 
 Para encerrar o simulador no terminal, pressione **Ctrl+C**.
 

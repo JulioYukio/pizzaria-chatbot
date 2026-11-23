@@ -159,3 +159,25 @@ test("código aleatório não permite consultar pedido",()=>{
  assert.match(b.falar("a","P001"),/Opção inválida/);
  assert.equal(b.sessoes.get("a").etapa,"menu");
 });
+
+test("pizzas exibem opção 9 uma única vez e permitem voltar sem perder carrinho",()=>{
+ const b=new Bot();
+ for(const t of ["oi","1","43 F 2","1","1"])b.falar("a",t);
+ const msg=b.textoCardapio(b.sessoes.get("a"));
+ assert.equal(msg.split("9 - Cancelar adição e finalizar pedido").length-1,1);
+ assert.match(msg,/8 - Voltar à escolha de categoria/);
+ assert.match(b.falar("a","8"),/Escolha a categoria/);
+ assert.equal(b.sessoes.get("a").itens[0].quantidade,2);
+ assert.match(b.falar("a","9"),/2x Pepperoni FAMÍLIA/);
+});
+test("bebidas permitem voltar para escolha de categoria e finalizar sem nova adição",()=>{
+ const b=new Bot();
+ for(const t of ["oi","1","43 F 2","1","2"])b.falar("a",t);
+ const lista=b.listar("bebida",b.sessoes.get("a"));
+ assert.match(lista,/8 - Voltar à escolha de categoria/);
+ assert.match(lista,/9 - Cancelar adição e finalizar pedido/);
+ assert.match(b.falar("a","8"),/1 - Pizzas/);
+ assert.match(b.falar("a","2"),/BEBIDAS/);
+ assert.match(b.falar("a","9"),/2x Pepperoni FAMÍLIA/);
+ assert.equal(b.sessoes.get("a").itens.length,1);
+});
