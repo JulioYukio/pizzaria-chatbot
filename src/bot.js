@@ -66,7 +66,7 @@ class Bot {
   return resposta;
  }
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
- textoCardapio(s){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nPara fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande)."+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\n8 - Voltar à escolha de categoria\nDigite 'menu' para voltar.";}
+ textoCardapio(s){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nPara fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande)."+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\n88 - Voltar à escolha de categoria\nDigite 'menu' para voltar.";}
  menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Ver pedido atual\nDigite menu para voltar ao início.";}
  fazerPedido(s){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas"+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  resumo(s){return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Adicionar outro produto\n3 - Cancelar";}
@@ -75,7 +75,7 @@ class Bot {
    const produtos=this.produtos.filter(p=>p.tipo===tipo);
    const titulo=tipo==="pizza"?"🍕 CATÁLOGO COMPLETO — PIZZAS":"🥤 BEBIDAS";
    const linhas=produtos.map(p=>(p.id===109?"109M":p.id===120?"109C / 120":p.id)+" - "+p.nome+(p.tipo==="bebida"?" — "+dinheiro(p.precoCentavos):""));
-   return titulo+"\n"+linhas.join("\n")+"\n\n"+(tipo==="pizza"?"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 16 G (Calabresa grande)\nOu: 16 G 2 (duas pizzas de calabresa grande).":"Exemplo: 1001 2 (duas bebidas).")+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\n8 - Voltar à escolha de categoria\nDigite 'menu' para voltar.";
+   return titulo+"\n"+linhas.join("\n")+"\n\n"+(tipo==="pizza"?"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 16 G (Calabresa grande)\nOu: 16 G 2 (duas pizzas de calabresa grande).":"Exemplo: 1001 2 (duas bebidas).")+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\n88 - Voltar à escolha de categoria\nDigite 'menu' para voltar.";
  }
  total(s){return s.itens.reduce((a,i)=>a+i.preco*i.quantidade,0);}
  adicionar(s,p,tamanho,quantidade){
@@ -99,7 +99,7 @@ class Bot {
     s.etapa="confirmar";delete s.pedido109;delete s.origem109;
     return this.resumo(s);
    }
-   if(t==="8"&&["produto","tamanho","quantidade","escolher109"].includes(s.etapa)){
+   if(t==="88"&&["produto","tamanho","quantidade","escolher109"].includes(s.etapa)){
     s.etapa="categoriaComprar";delete s.pedido109;delete s.origem109;
     return this.fazerPedido(s);
    }
