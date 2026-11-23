@@ -10,6 +10,7 @@ function ambiente({arquivoExiste=true,falhaPDF=false}={}){
  const bot=new Bot();
  class Client{
   on(nome,fn){eventos[nome]=fn;}
+  async getChatById(){return {archived:false};}
   async sendMessage(destino,corpo,opcoes){if(falhaPDF&&opcoes?.sendMediaAsDocument)throw new Error("Falha PDF");envios.push({destino,corpo,opcoes});}
   async initialize(){}
  }
@@ -49,6 +50,7 @@ test("várias mensagens inválidas geram um aviso, sem avalanche",async()=>{
  const bot=new Bot();
  class Client{
   on(evento,fn){eventos[evento]=fn;}
+  async getChatById(){return {archived:false};}
   async sendMessage(destino,texto){envios.push(texto);}
   async initialize(){}
  }
@@ -79,6 +81,7 @@ test("mensagem válida cancela erro pendente e só responde ao acerto",async()=>
  const bot=new Bot();
  class Client{
   on(evento,fn){eventos[evento]=fn;}
+  async getChatById(){return {archived:false};}
   async sendMessage(destino,texto,opts){envios.push({texto,opts});}
   async initialize(){}
  }
@@ -98,4 +101,63 @@ test("mensagem válida cancela erro pendente e só responde ao acerto",async()=>
  assert.match(respostas.at(-1),/Fazer pedido/);
  assert.equal(envios.length,0);
  assert.doesNotMatch(respostas.join(" "),/Opção inválida/);
+});
+
+test("não responde nem altera sessão para conversas arquivadas",async()=>{
+ const eventos={},envios=[],respostas=[];
+ const bot=new Bot();
+ let arquivado=true;
+ class Client{
+  on(evento,fn){eventos[evento]=fn;}
+  async getChatById(){return {archived:arquivado};}
+  async sendMessage(destino,corpo){envios.push(corpo);}
+  async initialize(){}
+ }
+ const deps={
+  "node:fs":{promises:{stat:async()=>({mtimeMs:1,ctimeMs:1,size:10})}},"node:path":path,
+  "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{fromFilePath:()=>({mimetype:"application/pdf"})}},
+  "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
+ };
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
+  require:nome=>deps[nome],__dirname:path.join(__dirname,"../src"),console,process,
+  setTimeout:()=>1,clearTimeout:()=>{}
+ });
+ const enviar=async body=>eventos.message({from:"a@c.us",type:"chat",body,reply:async texto=>respostas.push(texto)});
+ await enviar("oi");
+ await enviar("1");
+ assert.equal(respostas.length,0);
+ assert.equal(envios.length,0);
+ assert.equal(bot.sessoes.size,0);
+ arquivado=false;
+ await enviar("oi");
+ assert.match(respostas.at(-1),/A Fornalha/);
+ await enviar("1");
+ assert.equal(envios.length,1);
+ assert.match(respostas.at(-1),/Exemplo: 31 G/);
+ arquivado=true;
+ await enviar("2");
+ assert.equal(bot.sessoes.get("a@c.us").etapa,"ver");
+ assert.equal(respostas.length,3);
+});
+test("falha ao consultar chat bloqueia resposta por segurança",async()=>{
+ const eventos={},respostas=[];
+ const bot=new Bot();
+ class Client{
+  on(evento,fn){eventos[evento]=fn;}
+  async getChatById(){throw new Error("chat indisponível");}
+  async sendMessage(){throw new Error("não deve enviar");}
+  async initialize(){}
+ }
+ const deps={
+  "node:fs":{},"node:path":path,
+  "whatsapp-web.js":{Client,LocalAuth:class {},MessageMedia:{}},
+  "qrcode-terminal":{},"./bot":{Bot:class {constructor(){return bot;}}}
+ };
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8"),{
+  require:nome=>deps[nome],__dirname:path.join(__dirname,"../src"),console,process,
+  setTimeout:()=>1,clearTimeout:()=>{}
+ });
+ await eventos.message({from:"a@c.us",type:"chat",body:"oi",reply:async texto=>respostas.push(texto)});
+ assert.equal(respostas.length,0);
+ assert.equal(bot.sessoes.size,0);
 });
