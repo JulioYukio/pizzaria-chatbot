@@ -6,7 +6,7 @@ test("pedido completo atualizado, consulta restrita ao cliente e cancelamento",(
  assert.equal(b.produtos.find(p=>p.id===16).estoque,8);
  b.falar("a","3");assert.match(b.falar("a","P001"),/recebido/);
  b.falar("b","oi");b.falar("b","3");assert.match(b.falar("b","P001"),/não encontrado/);
- for(const t of ["menu","2","1","16 G 1","2","2"])b.falar("a",t);
+ for(const t of ["menu","2","1","16 G 1","2","3"])b.falar("a",t);
  assert.equal(b.pedidos.length,1);
  assert.equal(b.produtos.find(p=>p.id===16).estoque,8);
 });
@@ -82,4 +82,35 @@ test("bebidas permanecem listadas em texto após Fazer pedido",()=>{
  assert.match(msg,/BEBIDAS/);
  assert.match(msg,/1002 - Coca-Cola Zero 2L/);
  assert.match(b.falar("a","1002 4"),/Adicionado: 4x Coca-Cola Zero 2L/);
+});
+
+test("resumo: opção 2 adiciona produtos sem limpar carrinho, e opção 3 cancela",()=>{
+ const b=new Bot();
+ for(const t of ["oi","1","45 F","3","2"])b.falar("a",t);
+ let resumo=b.falar("a","2");
+ assert.match(resumo,/1 - Confirmar pedido FICTÍCIO/);
+ assert.match(resumo,/2 - Adicionar outro produto/);
+ assert.match(resumo,/3 - Cancelar/);
+ assert.equal(b.sessoes.get("a").etapa,"categoriaComprar");
+ assert.equal(b.sessoes.get("a").itens.length,1);
+ assert.equal(b.sessoes.get("a").itens[0].quantidade,3);
+ assert.match(b.falar("a","2"),/BEBIDAS/);
+ assert.match(b.falar("a","1002 4"),/Adicionado: 4x Coca-Cola Zero 2L/);
+ resumo=b.falar("a","2");
+ assert.match(resumo,/3x Pizzaiolo FAMÍLIA/);
+ assert.match(resumo,/4x Coca-Cola Zero 2L/);
+ assert.match(resumo,/R\$\s*305,00/);
+ assert.match(b.falar("a","abc"),/Digite 1 para confirmar, 2 para adicionar outro produto ou 3 para cancelar/);
+ assert.equal(b.sessoes.get("a").itens.length,2);
+ assert.match(b.falar("a","3"),/Pedido cancelado/);
+ assert.equal(b.sessoes.get("a").itens.length,0);
+ assert.equal(b.pedidos.length,0);
+});
+test("resumo: opção 2 permite outra pizza e confirmação mantém tudo",()=>{
+ const b=new Bot();
+ for(const t of ["oi","1","45 F 3","2","2","1","31 G 1","2","1"])b.falar("a",t);
+ assert.equal(b.pedidos.length,1);
+ assert.equal(b.pedidos[0].itens.length,2);
+ assert.equal(b.pedidos[0].itens[0].nome,"Pizzaiolo");
+ assert.equal(b.pedidos[0].itens[1].nome,"Jardineira");
 });

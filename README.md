@@ -117,7 +117,7 @@ O servidor usa a interface de loopback `127.0.0.1`: o endereço funciona **somen
 4. Envie `16 grande 2` — duas Calabresas grandes.
 5. Confira que o parcial é **R$ 134,00** (R$ 67,00 cada no PDF atualizado).
 6. Envie `2` para **Finalizar pedido**.
-7. Confira o resumo e envie `1` para **Confirmar pedido fictício**.
+7. Confira o resumo: envie `1` para **Confirmar pedido fictício**, `2` para **Adicionar outro produto** mantendo o carrinho ou `3` para **Cancelar**.
 8. O sistema deverá mostrar um código semelhante a `P001`.
 9. Para consultar, envie `3` na tela do menu e informe o código do pedido criado **na mesma conversa**.
 
@@ -136,6 +136,8 @@ Digite 'menu' para voltar.
 ```
 
 O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. Na opção `2 - Fazer pedido`, a categoria `1 - Pizzas` também envia o mesmo PDF e as mesmas instruções, sem mostrar a lista longa de sabores em texto. A categoria `2 - Bebidas` continua listando as bebidas com códigos e preços em texto.
+
+No resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha entre pizzas (PDF) e bebidas (lista em texto) sem descartar os itens já adicionados. Para cancelar o pedido no resumo, use a opção `3`.
 
 ### Outras formas de pedir
 
@@ -264,8 +266,8 @@ Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagen
 | `2` | Abre Fazer pedido e solicita categoria |
 | `1` | Na categoria Pizzas, envia o PDF e apresenta instruções para pedir por código e tamanho |
 | `16 grande 2` | Adiciona duas Calabresas grandes: R$ 134,00 |
-| `2` | Mostra o resumo com a opção de finalizar |
-| `1` | Confirma um pedido **fictício**, como `P001` |
+| `2` | Exibe o resumo com três opções: `1` confirmar, `2` adicionar outro produto e `3` cancelar |
+| `1` | No resumo, confirma um pedido **fictício**, como `P001` |
 | `3` | No menu, solicita o código para consulta |
 | `P001` | Consulta o pedido na **mesma conversa**, se o número existir |
 

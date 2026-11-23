@@ -129,12 +129,13 @@ class Bot {
    }
    if(s.etapa==="mais"){
      if(t==="1"){s.etapa="categoriaComprar";return this.fazerPedido();}
-     if(t==="2"){s.etapa="confirmar";return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Cancelar";}
+     if(t==="2"){s.etapa="confirmar";return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Adicionar outro produto\n3 - Cancelar";}
      return "Digite 1 ou 2.";
    }
    if(s.etapa==="confirmar"){
-     if(t==="2"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return "Pedido cancelado. Digite menu.";}
-     if(t!=="1")return "Digite 1 para confirmar ou 2 para cancelar.";
+     if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido();}
+     if(t==="3"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return "Pedido cancelado. Digite menu.";}
+     if(t!=="1")return "Digite 1 para confirmar, 2 para adicionar outro produto ou 3 para cancelar.";
       const quantidades=new Map();
       for(const item of s.itens)quantidades.set(item.id,(quantidades.get(item.id)||0)+item.quantidade);
       if(![...quantidades].every(([id,quantidade])=>this.produtos.find(p=>p.id===id).estoque>=quantidade)){
