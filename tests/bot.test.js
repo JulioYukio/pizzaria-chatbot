@@ -1,11 +1,12 @@
 const test=require("node:test");const assert=require("node:assert/strict");const {Bot}=require("../src/bot");
-test("pedido completo atualizado, consulta restrita ao cliente e cancelamento",()=>{
+test("pedido completo atualizado, código interno e cancelamento",()=>{
  const b=new Bot();
  for(const t of ["oi","2","1","16 G 2","1","2","1001 1","2","1"])b.falar("a",t);
  assert.equal(b.pedidos[0].total,15100);
  assert.equal(b.produtos.find(p=>p.id===16).estoque,8);
- b.falar("a","3");assert.match(b.falar("a","P001"),/recebido/);
- b.falar("b","oi");b.falar("b","3");assert.match(b.falar("b","P001"),/não encontrado/);
+ assert.equal(b.pedidos[0].codigo,"P001");
+ assert.equal(b.pedidos[0].status,"recebido");
+ b.falar("b","oi");assert.match(b.falar("b","3"),/carrinho está vazio/);
  for(const t of ["menu","2","1","16 G 1","2","3"])b.falar("a",t);
  assert.equal(b.pedidos.length,1);
  assert.equal(b.produtos.find(p=>p.id===16).estoque,8);
@@ -14,7 +15,7 @@ function abrir(b){b.falar("a","oi");b.falar("a","2");return b.falar("a","1");}
 test("PDF: 79 pizzas, 17 bebidas, Calabresa grande 67 reais",()=>{const b=new Bot();assert.equal(b.produtos.filter(p=>p.tipo==="pizza").length,79);assert.equal(b.produtos.filter(p=>p.tipo==="bebida").length,17);assert.equal(b.produtos.find(p=>p.id===16).precosCentavos.GRANDE,6700);});
 test("código 109 solicita escolha e preserva tamanho e quantidade",()=>{for(const [escolha,nome] of [["1","M&M"],["2","Churros"]]){const b=new Bot();abrir(b);assert.match(b.falar("a","109 G 2"),/Qual sabor/);assert.equal(b.sessoes.get("a").itens.length,0);assert.match(b.falar("a",escolha),/Adicionado/);assert.match(b.sessoes.get("a").itens[0].nome,new RegExp(nome));assert.equal(b.sessoes.get("a").itens[0].quantidade,2);assert.equal(b.sessoes.get("a").itens[0].tamanho,"GRANDE");}});
 test("M&M's 109M e Churros 120",()=>{for(const [codigo,nome] of [["109M","M&M"],["120","Churros"]]){const b=new Bot();abrir(b);assert.match(b.falar("a",codigo+" G 1"),new RegExp(nome==="M&M"?"M&M":"Churros"));}});
-test("pedido direto e preço atualizado",()=>{const b=new Bot();abrir(b);assert.match(b.falar("a","16 grande 2"),/134,00/);b.falar("a","2");assert.match(b.falar("a","1"),/P001/);assert.equal(b.pedidos[0].total,13400);});
+test("pedido direto e preço atualizado",()=>{const b=new Bot();abrir(b);assert.match(b.falar("a","16 grande 2"),/134,00/);b.falar("a","2");assert.match(b.falar("a","1"),/Pedido demonstrativo confirmado/);assert.equal(b.pedidos[0].total,13400);});
 test("erro no tamanho pede confirmação",()=>{const b=new Bot();abrir(b);assert.match(b.falar("a","34 medoi 3"),/MÉDIA/);assert.equal(b.sessoes.get("a").itens.length,0);});
 
 test("código 109 sem tamanho continua perguntando tamanho",()=>{const b=new Bot();abrir(b);assert.match(b.falar("a","109"),/Qual sabor/);assert.match(b.falar("a","2"),/Ingredientes/);assert.equal(b.sessoes.get("a").etapa,"tamanho");});
@@ -115,13 +116,13 @@ test("resumo: opção 2 permite outra pizza e confirmação mantém tudo",()=>{
  assert.equal(b.pedidos[0].itens[1].nome,"Jardineira");
 });
 
-test("menu preserva carrinho e opção 4 recupera resumo",()=>{
+test("menu preserva carrinho e opção 3 recupera resumo",()=>{
  const b=new Bot();for(const t of ["oi","1","59 F 2","menu"])b.falar("a",t);
  assert.equal(b.sessoes.get("a").itens.length,1);
- assert.match(b.falar("a","4"),/2x Rúcula FAMÍLIA/);
+ assert.match(b.falar("a","3"),/2x Rúcula FAMÍLIA/);
  assert.match(b.falar("a","2"),/Escolha a categoria/);
  assert.match(b.falar("a","9"),/2x Rúcula FAMÍLIA/);
- assert.match(b.falar("a","1"),/P001/);
+ assert.match(b.falar("a","1"),/Pedido demonstrativo confirmado/);
 });
 test("opção 9 cancela adição em pizzas e bebidas e mantém pedido",()=>{
  const b=new Bot();for(const t of ["oi","1","45 F 3","1"])b.falar("a",t);
@@ -139,4 +140,22 @@ test("reiniciar elimina carrinho, menu não",()=>{
  assert.equal(b.sessoes.get("a").itens.length,1);
  b.falar("a","reiniciar");
  assert.equal(b.sessoes.get("a").itens.length,0);
+});
+
+test("não oferece consulta nem divulga o identificador interno ao cliente",()=>{
+ const b=new Bot();
+ assert.doesNotMatch(b.menu(),/Consultar pedido|4 - Ver pedido atual/);
+ assert.match(b.menu(),/3 - Ver pedido atual/);
+ b.falar("a","oi");assert.match(b.falar("a","3"),/carrinho está vazio/);
+ b.falar("a","1");b.falar("a","16 G 1");b.falar("a","2");
+ const confirmacao=b.falar("a","1");
+ assert.match(confirmacao,/Pedido demonstrativo confirmado/);
+ assert.doesNotMatch(confirmacao,/P\d{3}|código|identificador/i);
+ assert.equal(b.pedidos[0].codigo,"P001");
+ b.falar("a","menu");assert.match(b.falar("a","3"),/carrinho está vazio/);
+});
+test("código aleatório não permite consultar pedido",()=>{
+ const b=new Bot();b.falar("a","oi");
+ assert.match(b.falar("a","P001"),/Opção inválida/);
+ assert.equal(b.sessoes.get("a").etapa,"menu");
 });

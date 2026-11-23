@@ -9,7 +9,7 @@ Protótipo acadêmico de atendimento automatizado para pizzaria, desenvolvido em
 - **79 pizzas**, com ingredientes e preços por tamanho: Broto, Média, Grande e Família.
 - **17 bebidas** cadastradas individualmente a partir do cardápio da pizzaria.
 - Arquivo oficial em **`assets/cardapio.pdf`**, com cinco páginas. Ele já está no GitHub, então não precisa ser enviado separadamente.
-- Atendimento com consulta de sabores, adição de produtos, cálculo de subtotal, carrinho, confirmação fictícia e consulta de pedidos.
+- Atendimento com consulta de sabores, adição de produtos, cálculo de subtotal, carrinho e confirmação fictícia. O código interno do pedido não aparece no chat.
 - Estoque **simulado de 10 unidades por produto**, reiniciado com o processo.
 - Interface web com chat e painel demonstrativo de pedidos.
 - Integração opcional com WhatsApp por `whatsapp-web.js` (não oficial).
@@ -119,7 +119,7 @@ O servidor usa a interface de loopback `127.0.0.1`: o endereço funciona **somen
 6. Envie `2` para **Finalizar pedido**.
 7. Confira o resumo: envie `1` para **Confirmar pedido fictício**, `2` para **Adicionar outro produto** mantendo o carrinho ou `3` para **Cancelar**.
 8. O sistema deverá mostrar um código semelhante a `P001`.
-9. Para consultar, envie `3` na tela do menu e informe o código do pedido criado **na mesma conversa**.
+9. No menu, envie `3 - Ver pedido atual` para conferir o carrinho ainda não confirmado. A consulta por código foi removida do chat.
 
 O simulador usa `data/simulador-cache.json` e o WhatsApp usa `data/whatsapp-cache.json` para salvar dados separadamente. O comando de reinício global do simulador limpa seu cache.
 
@@ -146,7 +146,7 @@ No resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha 
 - `16 média`: pergunta apenas a quantidade.
 - **1 - Ver cardápio:** envia o PDF no WhatsApp e já permite pedir pizza pelo código e tamanho, por exemplo `31 G`; o chatbot pergunta a quantidade em seguida.
 - `34 medoi 3`: o bot sugere **MÉDIA**, mas exige que o cliente reenvie a opção corrigida.
-- `menu`: volta ao início sem apagar o carrinho; no menu, digite `4 - Ver pedido atual` para recuperar o resumo. `reiniciar` ou `0`: descarta o carrinho atual.
+- `menu`: volta ao início sem apagar o carrinho; no menu, digite `3 - Ver pedido atual` para recuperar o resumo. `reiniciar` ou `0`: descarta o carrinho atual.
 - Com produtos no carrinho, `9 - Cancelar adição e finalizar pedido` aparece na escolha de categoria e nas categorias de pizzas e bebidas; retorna ao resumo sem adicionar produtos.
 
 Para encerrar o simulador no terminal, pressione **Ctrl+C**.
@@ -234,7 +234,7 @@ As falas ficam principalmente em **`src/bot.js`**:
 - `fazerPedido()`: escolha da categoria e instruções.
 - `listar(tipo)`: apresentação da lista de sabores.
 - `adicionar(...)`: item adicionado, preço parcial e próximos passos.
-- `falar(...)`: demais perguntas, validações, confirmação e consulta.
+- `falar(...)`: demais perguntas, validações e confirmação.
 
 Em **`src/whatsapp.js`** ficam a legenda do PDF e os avisos específicos
 do WhatsApp. Edite **apenas os textos entre aspas**: não altere variáveis,
@@ -267,9 +267,8 @@ Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagen
 | `1` | Na categoria Pizzas, envia o PDF e apresenta instruções para pedir por código e tamanho |
 | `16 grande 2` | Adiciona duas Calabresas grandes: R$ 134,00 |
 | `2` | Exibe o resumo com três opções: `1` confirmar, `2` adicionar outro produto e `3` cancelar |
-| `1` | No resumo, confirma um pedido **fictício**, como `P001` |
-| `3` | No menu, solicita o código para consulta |
-| `P001` | Consulta o pedido na **mesma conversa**, se o número existir |
+| `1` | No resumo, confirma o pedido fictício sem revelar seu código interno |
+| `3` | No menu, mostra o carrinho atual quando houver itens |
 
 Para testar o tratamento de erros, inicie outro pedido e envie `34 medoi 3`: a resposta deve sugerir **MÉDIA**, sem adicionar um item incorreto.
 

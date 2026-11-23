@@ -67,7 +67,7 @@ class Bot {
  }
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
  textoCardapio(s){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nPara fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande)."+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\nDigite 'menu' para voltar.";}
- menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\n4 - Ver pedido atual\nDigite menu para voltar ao início.";}
+ menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Ver pedido atual\nDigite menu para voltar ao início.";}
  fazerPedido(s){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas"+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  resumo(s){return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Adicionar outro produto\n3 - Cancelar";}
  listar(tipo,s) {
@@ -112,8 +112,7 @@ class Bot {
    if(s.etapa==="menu"){
      if(t==="1"){s.etapa="produto";s.tipo="pizza";return this.textoCardapio(s);}
      if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido(s);}
-     if(t==="3"){s.etapa="consulta";return "Informe o código do pedido (P001):";}
-     if(t==="4"){if(!s.itens.length)return "Seu carrinho está vazio.\n"+this.menu();s.etapa="confirmar";return this.resumo(s);}
+     if(t==="3"){if(!s.itens.length)return "Seu carrinho está vazio.\n"+this.menu();s.etapa="confirmar";return this.resumo(s);}
      return "Opção inválida.\n"+this.menu();
    }
    if(s.etapa==="categoriaComprar"){
@@ -184,12 +183,7 @@ class Bot {
      const pedido={codigo:"P"+String(this.sequencia++).padStart(3,"0"),cliente,itens:structuredClone(s.itens),total:this.total(s),status:"recebido",demonstracao:true};
      for(const i of pedido.itens)this.produtos.find(p=>p.id===i.id).estoque-=i.quantidade;
      this.pedidos.unshift(pedido);this.sessoes.set(cliente,{etapa:"menu",itens:[]});
-     return "✅ Pedido DEMONSTRATIVO "+pedido.codigo+" registrado! Total: "+dinheiro(pedido.total)+"\nNenhuma venda real foi realizada. Digite menu.";
-   }
-   if(s.etapa==="consulta"){
-     this.sessoes.set(cliente,{etapa:"menu",itens:[]});
-     const pedido=this.pedidos.find(p=>p.codigo.toLowerCase()===t.toLowerCase()&&p.cliente===cliente);
-     return pedido?"Pedido "+pedido.codigo+": "+pedido.status+". Digite menu.":"Pedido não encontrado nesta conversa. Digite menu.";
+     return "✅ Pedido demonstrativo confirmado! Total: "+dinheiro(pedido.total)+"\nNenhuma venda real foi realizada. Digite menu.";
    }
    return this.menu();
  }
