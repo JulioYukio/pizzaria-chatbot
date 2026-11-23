@@ -185,6 +185,11 @@ O bot deve permanecer em execução com o **computador ligado** e o terminal abe
 
 ### O que o bot responde e o que ele ignora
 
+### Atendimento apenas a conversas não arquivadas
+
+O bot de WhatsApp responde apenas a **conversas privadas não arquivadas**. Antes de processar qualquer mensagem ou enviar o PDF, consulta a propriedade `chat.archived` por meio de `whatsapp-web.js`. Quando a conversa está arquivada, a mensagem é ignorada, sem alterar o andamento do pedido. Se o estado de arquivamento não puder ser consultado, o atendimento é suspenso para aquela mensagem por segurança. Avisos de erro que aguardam envio também verificam novamente o arquivamento. Para reativar o atendimento, desarquive a conversa no WhatsApp e envie uma nova mensagem.
+
+
 - Responde a **mensagens privadas de texto** recebidas pela conta de teste.
 - Ignora mensagens dos **grupos** e mensagens enviadas pela própria conta.
 - Envia `assets/cardapio.pdf` como **documento** somente ao selecionar `1 - Ver cardápio` no menu principal.
