@@ -103,6 +103,11 @@ function agendarAvisoInvalido(cliente, resposta) {
   estado.resposta = resposta;
   estado.timer = setTimeout(async () => {
     estado.timer = null;
+    // A conversa pode ter sido arquivada durante a espera.
+    if (!(await conversaAtiva({from:cliente}))) {
+      avisosInvalidos.delete(cliente);
+      return;
+    }
     estado.ultimoAviso = Date.now();
     try {
       await enviarTextoSeguro(cliente, estado.resposta);
@@ -113,7 +118,29 @@ function agendarAvisoInvalido(cliente, resposta) {
   avisosInvalidos.set(cliente, estado);
 }
 
+// Verifica o estado atual da conversa antes de qualquer alteração no pedido.
+async function conversaAtiva(msg) {
+  try {
+    const chat = typeof msg.getChat === "function"
+      ? await msg.getChat()
+      : await client.getChatById(msg.from);
+    // Na dúvida (falha da API ou estado ausente), não envie mensagens.
+    if (typeof chat?.archived !== "boolean") {
+      console.warn("Estado de arquivamento indisponível; mensagem ignorada.");
+      return false;
+    }
+    return chat.archived === false;
+  } catch (erro) {
+    console.warn("Não foi possível consultar arquivamento; mensagem ignorada:", erro?.message || "erro desconhecido");
+    return false;
+  }
+}
+
 async function responder(msg) {
+  if (!(await conversaAtiva(msg))) {
+    cancelarAvisoInvalido(msg.from);
+    return;
+  }
   const entrada = String(msg.body || "").trim();
 
   try {
