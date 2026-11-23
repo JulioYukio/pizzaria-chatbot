@@ -187,3 +187,25 @@ test("código 8 da pizza Baiacatu continua disponível e 88 volta",()=>{
  assert.match(b.falar("a","8"),/Baiacatu/);
  assert.match(b.falar("a","88"),/Escolha a categoria/);
 });
+
+test("escolha de categorias mostra somente opções e carrinho existente",()=>{
+ const b=new Bot();
+ b.falar("a","oi");
+ let msg=b.falar("a","2");
+ assert.match(msg,/1 - Pizzas/);
+ assert.match(msg,/2 - Bebidas/);
+ assert.doesNotMatch(msg,/Tamanhos:|Exemplo:|Carrinho atual:/);
+ b.falar("a","1");
+ b.falar("a","43 F 2");
+ msg=b.falar("a","1");
+ assert.match(msg,/Carrinho atual:/);
+ assert.match(msg,/2x Pepperoni FAMÍLIA — R\$\s*158,00/);
+ assert.match(msg,/Total: R\$\s*158,00/);
+ assert.match(msg,/9 - Cancelar adição e finalizar pedido/);
+ assert.doesNotMatch(msg,/Tamanhos:|Exemplo:/);
+ b.falar("a","2");
+ msg=b.falar("a","88");
+ assert.match(msg,/Carrinho atual:/);
+ assert.match(msg,/2x Pepperoni FAMÍLIA/);
+ assert.equal(b.sessoes.get("a").itens.length,1);
+});

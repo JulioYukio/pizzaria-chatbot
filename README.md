@@ -137,7 +137,7 @@ Digite 'menu' para voltar.
 
 O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. Na opção `2 - Fazer pedido`, a categoria `1 - Pizzas` também envia o mesmo PDF e as mesmas instruções, sem mostrar a lista longa de sabores em texto. A categoria `2 - Bebidas` continua listando as bebidas com códigos e preços em texto. Em ambos os caminhos, a opção `9` permite desistir de adicionar outro produto e ir ao resumo, quando já existe item no carrinho.
 
-No resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha entre pizzas (PDF) e bebidas (lista em texto) sem descartar os itens já adicionados. Para cancelar o pedido no resumo, use a opção `3`.
+Na tela de escolha entre **1 - Pizzas** e **2 - Bebidas**, não há informações de tamanhos nem exemplos de códigos; com itens já adicionados, aparece o carrinho atual com quantidades, valores e total. A opção `9` permite voltar ao resumo sem inserir outro produto.\n\nNo resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha entre pizzas (PDF) e bebidas (lista em texto) sem descartar os itens já adicionados. Para cancelar o pedido no resumo, use a opção `3`.
 
 ### Outras formas de pedir
 
