@@ -26,12 +26,15 @@ function ambiente({arquivoExiste=true,falhaPDF=false}={}){
  });
  return {bot,envios,respostas,enviar:async body=>eventos.message({from:"a@c.us",type:"chat",body,reply:async txt=>respostas.push(txt)})};
 }
-test("opção 1: um PDF e somente instruções, sem lista de sabores",async()=>{
+test("opção 1: PDF e pedido imediato de pizza",async()=>{
  const a=ambiente();await a.enviar("oi");await a.enviar("1");
  assert.equal(a.envios.length,1);assert.equal(a.envios[0].opcoes.sendMediaAsDocument,true);
  assert.match(a.respostas.at(-1),/Exemplo: 31 G \(Jardineira grande\)/);
- assert.doesNotMatch(a.respostas.at(-1),/Escolha uma categoria|0 - Fazer pedido|Quantidade|CATÁLOGO COMPLETO/);
- await a.enviar("31 G 2");assert.equal(a.bot.sessoes.get("a@c.us").itens.length,0);
+ assert.doesNotMatch(a.respostas.at(-1),/Escolha uma categoria|0 - Fazer pedido|CATÁLOGO COMPLETO/);
+ assert.equal(a.bot.sessoes.get("a@c.us").etapa,"produto");
+ await a.enviar("31 G");assert.match(a.respostas.at(-1),/Quantas unidades/);
+ await a.enviar("2");assert.match(a.respostas.at(-1),/Adicionado: 2x Jardineira GRANDE/);
+ assert.equal(a.bot.sessoes.get("a@c.us").itens.length,1);
  assert.equal(a.envios.length,1);
  await a.enviar("menu");assert.equal(a.envios.length,1);
 });
@@ -136,7 +139,7 @@ test("não responde nem altera sessão para conversas arquivadas",async()=>{
  assert.match(respostas.at(-1),/Exemplo: 31 G/);
  arquivado=true;
  await enviar("2");
- assert.equal(bot.sessoes.get("a@c.us").etapa,"ver");
+ assert.equal(bot.sessoes.get("a@c.us").etapa,"produto");
  assert.equal(respostas.length,2);
 });
 test("falha ao consultar chat bloqueia resposta por segurança",async()=>{

@@ -125,24 +125,24 @@ O painel web consulta os pedidos gerados por esse próprio simulador. Ao reinici
 
 **Observação:** o simulador web apresenta o cardápio em **texto**. O envio automático do arquivo PDF está implementado no módulo separado do **WhatsApp**, não na interface web.
 
-### Consultar somente o PDF
+### Cardápio em PDF e pedido direto
 
-Na tela inicial, digite `1`. O WhatsApp envia o PDF e o bot exibe somente:
+Na tela inicial, digite `1`. O WhatsApp envia o PDF e o chatbot apresenta:
 
 ```text
 Tamanhos: B/Broto, M/Média, G/Grande, F/Família.
-Exemplo: 31 G (Jardineira grande)
+Para fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande).
 Digite 'menu' para voltar.
 ```
 
-Nesta tela não há seleção de categoria, quantidade ou adição ao carrinho. Para pedir, use `menu` → `2 - Fazer pedido`.
+O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. A opção `2 - Fazer pedido` continua disponível, inclusive para bebidas.
 
 ### Outras formas de pedir
 
 - `16 G 2` ou `16 grande 2`: informa produto, tamanho e quantidade de uma vez.
 - `16`: mostra ingredientes e preços e pergunta tamanho e quantidade.
 - `16 média`: pergunta apenas a quantidade.
-- **1 - Ver cardápio:** no WhatsApp, envia o PDF e as instruções de tamanhos; não realiza pedidos nessa opção. Para comprar, digite `menu` e selecione `2 - Fazer pedido`.
+- **1 - Ver cardápio:** envia o PDF no WhatsApp e já permite pedir pizza pelo código e tamanho, por exemplo `31 G`; o chatbot pergunta a quantidade em seguida.
 - `34 medoi 3`: o bot sugere **MÉDIA**, mas exige que o cliente reenvie a opção corrigida.
 - `menu` ou `reiniciar`: volta ao início e descarta o carrinho atual.
 - `0` também reinicia a conversa em qualquer etapa.
@@ -259,7 +259,7 @@ Use **outro telefone / outra conta de WhatsApp autorizada** para mandar mensagen
 | Mensagem enviada pelo cliente | Resultado esperado |
 | --- | --- |
 | `oi` | Exibe o menu inicial |
-| `1` | Envia o PDF e mostra apenas as instruções de tamanho |
+| `1` | Envia o PDF e orienta como começar o pedido de pizza pelo código e tamanho |
 | `menu` | Retorna ao menu inicial |
 | `2` | Abre Fazer pedido e solicita categoria |
 | `1` | Mostra a lista de pizzas em texto para realizar pedido |

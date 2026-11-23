@@ -71,7 +71,6 @@ const ESPERA_ERRO_MS = 1500;
 const INTERVALO_AVISO_MS = 8000;
 
 function ehRespostaInvalida(resposta, entrada, etapaAnterior) {
-  if (etapaAnterior === "ver" && !/^(menu|reiniciar|0)$/i.test(entrada)) return true;
   return /^(Opção inválida\.|Digite 1 ou 2\.|Digite 1 para pizzas|Digite 1 para confirmar|Digite 1 para confirmar ou 2|Código inválido\.|Tamanho inválido\.|Quantidade inválida\.|Formato inválido\.|Escolha um sabor para continuar:|Você quis dizer |Estoque simulado insuficiente\.|Produto indisponível no estoque simulado\.|Pedido não encontrado nesta conversa)/i.test(resposta);
 }
 

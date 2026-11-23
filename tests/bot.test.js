@@ -21,12 +21,24 @@ test("código 109 sem tamanho continua perguntando tamanho",()=>{const b=new Bot
 test("escolha inválida mantém seleção de sabores",()=>{const b=new Bot();abrir(b);b.falar("a","109 M 3");assert.match(b.falar("a","invalido"),/Escolha um sabor/);assert.equal(b.sessoes.get("a").etapa,"escolher109");assert.match(b.falar("a","Churros"),/Adicionado/);});
 test("mensagens personalizadas",()=>{const b=new Bot();assert.match(b.menu(),/A Fornalha Pizzaria — PROTÓTIPO/);b.falar("a","oi");b.falar("a","2");assert.match(b.falar("a","1"),/duas pizzas de calabresa grande/);});
 
-test("opção 1 mostra apenas instruções do PDF, sem pedido nem quantidade",()=>{
- const b=new Bot();b.falar("a","oi");const msg=b.falar("a","1");
- assert.equal(msg,"Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\\nExemplo: 31 G (Jardineira grande)\\nDigite 'menu' para voltar.".replaceAll("\\n","\n"));
- assert.equal(b.sessoes.get("a").etapa,"ver");
- for(const entrada of ["31 G","31 G 2"]){assert.equal(b.falar("a",entrada),b.textoCardapio());assert.equal(b.sessoes.get("a").itens.length,0);}
- assert.equal(b.falar("a","0"),b.menu());
+test("opção 1 permite pedido imediato após o PDF",()=>{
+ const b=new Bot();b.falar("a","oi");const texto=b.falar("a","1");
+ assert.match(texto,/Para fazer seu pedido, informe o código da pizza e o tamanho/);
+ assert.match(texto,/31 G \(Jardineira grande\)/);
+ assert.equal(b.sessoes.get("a").etapa,"produto");
+ assert.match(b.falar("a","31 G"),/Quantas unidades/);
+ assert.equal(b.sessoes.get("a").etapa,"quantidade");
+ assert.equal(b.sessoes.get("a").itens.length,0);
+ assert.match(b.falar("a","2"),/Adicionado: 2x Jardineira GRANDE/);
+ assert.equal(b.sessoes.get("a").itens.length,1);
+ assert.equal(b.falar("a","menu"),b.menu());
+});
+test("opção 1 preserva escolha do sabor duplicado e voltar",()=>{
+ const b=new Bot();b.falar("a","oi");b.falar("a","1");
+ assert.match(b.falar("a","999 G"),/Código inválido/);
+ assert.match(b.falar("a","109 G"),/Qual sabor/);
+ assert.match(b.falar("a","2"),/Quantas unidades/);
+ assert.match(b.falar("a","1"),/Adicionado: 1x Churros GRANDE/);
  assert.equal(b.falar("a","menu"),b.menu());
 });
 

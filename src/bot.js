@@ -34,7 +34,7 @@ function analisarTamanho(entrada){
 class Bot {
  constructor(){this.reiniciar();}
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
- textoCardapio(){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nExemplo: 31 G (Jardineira grande)\nDigite 'menu' para voltar.";}
+ textoCardapio(){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nPara fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande).\nDigite 'menu' para voltar.";}
  menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
  fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
  listar(tipo) {
@@ -70,7 +70,7 @@ class Bot {
      return this.falar(cliente,pedido.replace(/^109(?=\s|$)/,codigo));
    }
    if(s.etapa==="menu"){
-     if(t==="1"){s.etapa="ver";return this.textoCardapio();}
+     if(t==="1"){s.etapa="produto";s.tipo="pizza";return this.textoCardapio();}
      if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido();}
      if(t==="3"){s.etapa="consulta";return "Informe o código do pedido (P001):";}
      return "Opção inválida.\n"+this.menu();
@@ -81,7 +81,6 @@ class Bot {
      s.etapa="produto";
      return this.listar(s.tipo);
    }
-   if(s.etapa==="ver")return this.textoCardapio();
    if(s.etapa==="produto"){
      const partes=t.split(/\s+/),id=Number(partes[0]);
      if(s.tipo==="pizza"&&id===109&&!/^109[MC]$/i.test(partes[0])){
