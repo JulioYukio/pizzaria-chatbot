@@ -114,3 +114,29 @@ test("resumo: opção 2 permite outra pizza e confirmação mantém tudo",()=>{
  assert.equal(b.pedidos[0].itens[0].nome,"Pizzaiolo");
  assert.equal(b.pedidos[0].itens[1].nome,"Jardineira");
 });
+
+test("menu preserva carrinho e opção 4 recupera resumo",()=>{
+ const b=new Bot();for(const t of ["oi","1","59 F 2","menu"])b.falar("a",t);
+ assert.equal(b.sessoes.get("a").itens.length,1);
+ assert.match(b.falar("a","4"),/2x Rúcula FAMÍLIA/);
+ assert.match(b.falar("a","2"),/Escolha a categoria/);
+ assert.match(b.falar("a","9"),/2x Rúcula FAMÍLIA/);
+ assert.match(b.falar("a","1"),/P001/);
+});
+test("opção 9 cancela adição em pizzas e bebidas e mantém pedido",()=>{
+ const b=new Bot();for(const t of ["oi","1","45 F 3","1"])b.falar("a",t);
+ assert.match(b.falar("a","9"),/3x Pizzaiolo FAMÍLIA/);
+ b.falar("a","2");
+ assert.match(b.falar("a","1"),/9 - Cancelar adição/);
+ assert.match(b.falar("a","9"),/3x Pizzaiolo FAMÍLIA/);
+ b.falar("a","2");
+ assert.match(b.falar("a","2"),/BEBIDAS/);
+ assert.match(b.falar("a","9"),/3x Pizzaiolo FAMÍLIA/);
+ assert.equal(b.sessoes.get("a").itens.length,1);
+});
+test("reiniciar elimina carrinho, menu não",()=>{
+ const b=new Bot();for(const t of ["oi","1","59 F 2","menu"])b.falar("a",t);
+ assert.equal(b.sessoes.get("a").itens.length,1);
+ b.falar("a","reiniciar");
+ assert.equal(b.sessoes.get("a").itens.length,0);
+});

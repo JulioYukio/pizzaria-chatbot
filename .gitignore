@@ -151,3 +151,7 @@ vite.config.ts.timestamp-*
 # Sessões locais de autenticação WhatsApp (NUNCA versionar)
 .wwebjs_auth/
 .wwebjs_cache/
+
+# Cache local com dados de atendimento: nunca enviar ao GitHub
+data/*-cache.json
+data/*-cache.json.tmp

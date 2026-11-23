@@ -121,7 +121,7 @@ O servidor usa a interface de loopback `127.0.0.1`: o endereço funciona **somen
 8. O sistema deverá mostrar um código semelhante a `P001`.
 9. Para consultar, envie `3` na tela do menu e informe o código do pedido criado **na mesma conversa**.
 
-O painel web consulta os pedidos gerados por esse próprio simulador. Ao reiniciar o servidor, a memória de pedidos é apagada.
+O simulador usa `data/simulador-cache.json` e o WhatsApp usa `data/whatsapp-cache.json` para salvar dados separadamente. O comando de reinício global do simulador limpa seu cache.
 
 **Observação:** o simulador web apresenta o cardápio em **texto**. O envio automático do arquivo PDF está implementado no módulo separado do **WhatsApp**, não na interface web.
 
@@ -135,7 +135,7 @@ Para fazer seu pedido, informe o código da pizza e o tamanho, como neste exempl
 Digite 'menu' para voltar.
 ```
 
-O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. Na opção `2 - Fazer pedido`, a categoria `1 - Pizzas` também envia o mesmo PDF e as mesmas instruções, sem mostrar a lista longa de sabores em texto. A categoria `2 - Bebidas` continua listando as bebidas com códigos e preços em texto.
+O cliente pode enviar `31 G`, receber a pergunta sobre **quantidade** e continuar com subtotal, carrinho e confirmação fictícia. O pedido inicia diretamente, sem escolher categoria nem voltar ao menu. Na opção `2 - Fazer pedido`, a categoria `1 - Pizzas` também envia o mesmo PDF e as mesmas instruções, sem mostrar a lista longa de sabores em texto. A categoria `2 - Bebidas` continua listando as bebidas com códigos e preços em texto. Em ambos os caminhos, a opção `9` permite desistir de adicionar outro produto e ir ao resumo, quando já existe item no carrinho.
 
 No resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha entre pizzas (PDF) e bebidas (lista em texto) sem descartar os itens já adicionados. Para cancelar o pedido no resumo, use a opção `3`.
 
@@ -146,8 +146,8 @@ No resumo do pedido, a opção `2 - Adicionar outro produto` retorna à escolha 
 - `16 média`: pergunta apenas a quantidade.
 - **1 - Ver cardápio:** envia o PDF no WhatsApp e já permite pedir pizza pelo código e tamanho, por exemplo `31 G`; o chatbot pergunta a quantidade em seguida.
 - `34 medoi 3`: o bot sugere **MÉDIA**, mas exige que o cliente reenvie a opção corrigida.
-- `menu` ou `reiniciar`: volta ao início e descarta o carrinho atual.
-- `0` também reinicia a conversa em qualquer etapa.
+- `menu`: volta ao início sem apagar o carrinho; no menu, digite `4 - Ver pedido atual` para recuperar o resumo. `reiniciar` ou `0`: descarta o carrinho atual.
+- Com produtos no carrinho, `9 - Cancelar adição e finalizar pedido` aparece na escolha de categoria e nas categorias de pizzas e bebidas; retorna ao resumo sem adicionar produtos.
 
 Para encerrar o simulador no terminal, pressione **Ctrl+C**.
 
@@ -314,7 +314,7 @@ Não é necessário reenviar manualmente o PDF: ele já faz parte do repositóri
 
 ## 11. Limitações atuais e segurança
 
-- **Não existe banco de dados**: os pedidos são perdidos ao reiniciar cada processo.
+- **Cache JSON local, sem banco de dados**: carrinhos e pedidos fictícios são carregados após reiniciar o programa. Sessões sem atividade por 7 dias são descartadas no carregamento. Os arquivos em `data/` não devem ser publicados.
 - **Não existe venda real**, pagamento, entrega ou confirmação com a pizzaria.
 - O painel web demonstra **somente os pedidos feitos pelo simulador web**; não recebe automaticamente os do WhatsApp.
 - O sistema web **não possui login/autenticação** e se limita ao uso local. **Não exponha o servidor à internet.**

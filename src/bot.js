@@ -1,5 +1,6 @@
 "use strict";
 const original = require("./cardapio.json");
+const {lerCache,gravarCache}=require("./cache");
 const tamanhos = ["BROTO", "MÉDIA", "GRANDE", "FAMÍLIA"];
 const moeda = new Intl.NumberFormat("pt-BR", {style:"currency",currency:"BRL"});
 const dinheiro = centavos => moeda.format(centavos / 100);
@@ -32,13 +33,45 @@ function analisarTamanho(entrada){
 }
 
 class Bot {
- constructor(){this.reiniciar();}
+ constructor({cacheFile=null}={}){this.cacheFile=cacheFile;this.reiniciar();this.carregarCache();}
+ carregarCache(){
+  if(!this.cacheFile)return;
+  const d=lerCache(this.cacheFile);
+  if(!d||d.versao!==1)return;
+  const agora=Date.now();
+  for(const par of (Array.isArray(d.sessoes)?d.sessoes:[])){
+   if(!Array.isArray(par)||par.length!==2)continue;
+   const [cliente,s]=par;
+   if(typeof cliente!=="string"||!s||!Array.isArray(s.itens)||typeof s.etapa!=="string")continue;
+   if(!Number.isFinite(s.ultimaAtividade)||agora-s.ultimaAtividade>7*24*60*60*1000)continue;
+   this.sessoes.set(cliente,s);
+  }
+  if(Array.isArray(d.pedidos))this.pedidos=d.pedidos;
+  if(Number.isSafeInteger(d.sequencia)&&d.sequencia>0)this.sequencia=d.sequencia;
+  if(Array.isArray(d.estoques))for(const item of d.estoques){
+   if(!Array.isArray(item))continue;
+   const p=this.produtos.find(p=>p.id===item[0]);
+   if(p&&Number.isInteger(item[1])&&item[1]>=0&&item[1]<=10)p.estoque=item[1];
+  }
+ }
+ salvarCache(){
+  if(!this.cacheFile)return;
+  gravarCache(this.cacheFile,{versao:1,sessoes:[...this.sessoes],pedidos:this.pedidos,sequencia:this.sequencia,estoques:this.produtos.map(p=>[p.id,p.estoque])});
+ }
+ falar(cliente,entrada){
+  const resposta=this.processar(cliente,entrada);
+  const s=this.sessoes.get(cliente);
+  if(s)s.ultimaAtividade=Date.now();
+  this.salvarCache();
+  return resposta;
+ }
  reiniciar(){this.produtos=[...structuredClone(original.pizzas),...structuredClone(original.bebidas)].map(p=>({...p,estoque:10}));this.pedidos=[];this.sessoes=new Map();this.sequencia=1;}
- textoCardapio(){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nPara fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande).\nDigite 'menu' para voltar.";}
- menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\nDigite menu para recomeçar.";}
- fazerPedido(){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
- listar(tipo) {
-   if(tipo==="pizza")return this.textoCardapio();
+ textoCardapio(s){return "Tamanhos: B/Broto, M/Média, G/Grande, F/Família.\nPara fazer seu pedido, informe o código da pizza e o tamanho, como neste exemplo: 31 G (Jardineira grande)."+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\nDigite 'menu' para voltar.";}
+ menu(){return "A Fornalha Pizzaria — PROTÓTIPO\n1 - Ver cardápio\n2 - Fazer pedido\n3 - Consultar pedido\n4 - Ver pedido atual\nDigite menu para voltar ao início.";}
+ fazerPedido(s){return "🛒 Fazer pedido\nEscolha a categoria:\n1 - Pizzas\n2 - Bebidas"+(s?.itens?.length?"\n9 - Cancelar adição e finalizar pedido":"")+"\nTamanhos: "+opcoesTamanho+"\nExemplo: 16 grande 2 (2 Calabresas grandes).";}
+ resumo(s){return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Adicionar outro produto\n3 - Cancelar";}
+ listar(tipo,s) {
+   if(tipo==="pizza")return this.textoCardapio(s);
    const produtos=this.produtos.filter(p=>p.tipo===tipo);
    const titulo=tipo==="pizza"?"🍕 CATÁLOGO COMPLETO — PIZZAS":"🥤 BEBIDAS";
    const linhas=produtos.map(p=>(p.id===109?"109M":p.id===120?"109C / 120":p.id)+" - "+p.nome+(p.tipo==="bebida"?" — "+dinheiro(p.precoCentavos):""));
@@ -55,11 +88,17 @@ class Bot {
    s.etapa="mais";
    return "✅ Adicionado: "+quantidade+"x "+p.nome+(tamanho?" "+tamanho:"")+" — "+dinheiro((tamanho?p.precosCentavos[tamanho]:p.precoCentavos)*quantidade)+"\nParcial: "+dinheiro(this.total(s))+"\n\n1 - Adicionar outro produto\n2 - Finalizar pedido";
  }
- falar(cliente,entrada){
+ processar(cliente,entrada){
    const t=String(entrada??"").trim(),n=Number(t);
    if(!t)return "Digite uma mensagem.";
-   if(!this.sessoes.has(cliente)||/^(menu|reiniciar)$/i.test(t)||t==="0"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
+   if(!this.sessoes.has(cliente)){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
+   if(/^reiniciar$/i.test(t)||t==="0"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return this.menu();}
    const s=this.sessoes.get(cliente);
+   if(/^menu$/i.test(t)){s.etapa="menu";return this.menu();}
+   if(t==="9"&&["categoriaComprar","produto","tamanho","quantidade","escolher109"].includes(s.etapa)&&s.itens.length){
+    s.etapa="confirmar";delete s.pedido109;delete s.origem109;
+    return this.resumo(s);
+   }
    if(s.etapa==="escolher109"){
      const escolha=normalizar(t);
      const codigo=escolha==="1"||escolha==="M&M'S"||escolha==="M&MS"||escolha==="MMS"?"109M":escolha==="2"||escolha==="CHURROS"?"109C":null;
@@ -71,16 +110,17 @@ class Bot {
      return this.falar(cliente,pedido.replace(/^109(?=\s|$)/,codigo));
    }
    if(s.etapa==="menu"){
-     if(t==="1"){s.etapa="produto";s.tipo="pizza";return this.textoCardapio();}
-     if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido();}
+     if(t==="1"){s.etapa="produto";s.tipo="pizza";return this.textoCardapio(s);}
+     if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido(s);}
      if(t==="3"){s.etapa="consulta";return "Informe o código do pedido (P001):";}
+     if(t==="4"){if(!s.itens.length)return "Seu carrinho está vazio.\n"+this.menu();s.etapa="confirmar";return this.resumo(s);}
      return "Opção inválida.\n"+this.menu();
    }
    if(s.etapa==="categoriaComprar"){
      if(t!=="1"&&t!=="2")return "Digite 1 para pizzas ou 2 para bebidas.";
      s.tipo=t==="1"?"pizza":"bebida";
      s.etapa="produto";
-     return s.tipo==="pizza"?this.textoCardapio():this.listar(s.tipo);
+     return s.tipo==="pizza"?this.textoCardapio(s):this.listar(s.tipo,s);
    }
    if(s.etapa==="produto"){
      const partes=t.split(/\s+/),id=Number(partes[0]);
@@ -91,7 +131,7 @@ class Bot {
      }
      const codigo=/^109M$/i.test(partes[0])?109:/^109C$/i.test(partes[0])?120:id;
      const p=this.produtos.find(p=>p.id===codigo&&p.tipo===s.tipo);
-     if(!p||(!Number.isInteger(id)&&!/^109[MC]$/i.test(partes[0])))return "Código inválido. Consulte a lista e digite o número correto.\n"+this.listar(s.tipo);
+     if(!p||(!Number.isInteger(id)&&!/^109[MC]$/i.test(partes[0])))return "Código inválido. Consulte a lista e digite o número correto.\n"+this.listar(s.tipo,s);
      if(p.estoque<1)return "Produto indisponível no estoque simulado. Escolha outro.";
      s.produtoId=p.id;
      if(p.tipo==="pizza"){
@@ -128,12 +168,12 @@ class Bot {
      return this.adicionar(s,p,s.tamanho,n);
    }
    if(s.etapa==="mais"){
-     if(t==="1"){s.etapa="categoriaComprar";return this.fazerPedido();}
-     if(t==="2"){s.etapa="confirmar";return "Resumo:\n"+s.itens.map(i=>i.quantidade+"x "+i.nome+(i.tamanho?" "+i.tamanho:"")+" — "+dinheiro(i.preco*i.quantidade)).join("\n")+"\nTotal: "+dinheiro(this.total(s))+"\n1 - Confirmar pedido FICTÍCIO\n2 - Adicionar outro produto\n3 - Cancelar";}
+     if(t==="1"){s.etapa="categoriaComprar";return this.fazerPedido(s);}
+     if(t==="2"){s.etapa="confirmar";return this.resumo(s);}
      return "Digite 1 ou 2.";
    }
    if(s.etapa==="confirmar"){
-     if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido();}
+     if(t==="2"){s.etapa="categoriaComprar";return this.fazerPedido(s);}
      if(t==="3"){this.sessoes.set(cliente,{etapa:"menu",itens:[]});return "Pedido cancelado. Digite menu.";}
      if(t!=="1")return "Digite 1 para confirmar, 2 para adicionar outro produto ou 3 para cancelar.";
       const quantidades=new Map();

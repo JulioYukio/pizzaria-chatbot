@@ -15,7 +15,7 @@ try {
   process.exit(1);
 }
 
-const bot = new Bot();
+const bot = new Bot({cacheFile:path.join(__dirname,"..","data","whatsapp-cache.json")});
 // A identificação mostrada nos dispositivos conectados acompanha o sistema do computador.
 // Não é o nome físico do computador; o WhatsApp pode manter o nome da sessão anterior.
 const nomesSistema = {win32:"Windows", darwin:"macOS", linux:"Linux"};

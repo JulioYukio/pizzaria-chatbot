@@ -2,7 +2,7 @@ const http=require("node:http");
 const fs=require("node:fs/promises");
 const path=require("node:path");
 const {Bot}=require("./bot");
-const bot=new Bot();
+const bot=new Bot({cacheFile:path.join(__dirname,"..","data","simulador-cache.json")});
 function json(res,status,data){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"});res.end(JSON.stringify(data))}
 const assets={"/":"index.html","/app.js":"app.js","/style.css":"style.css"};
 const server=http.createServer(async(req,res)=>{
@@ -20,7 +20,7 @@ const server=http.createServer(async(req,res)=>{
    if(typeof d.cliente!=="string"||!/^[a-zA-Z0-9_-]{1,50}$/.test(d.cliente)||typeof d.mensagem!=="string"||d.mensagem.length>1000)return json(res,400,{erro:"Mensagem inválida"});
    return json(res,200,{resposta:bot.falar(d.cliente,d.mensagem)});
   }
-  if(req.method==="POST"&&url.pathname==="/api/reiniciar"){bot.reiniciar();return json(res,200,{ok:true})}
+  if(req.method==="POST"&&url.pathname==="/api/reiniciar"){bot.reiniciar();bot.salvarCache();return json(res,200,{ok:true})}
   return json(res,404,{erro:"Rota não encontrada"});
  }catch(e){console.error(e);return json(res,500,{erro:"Erro interno"})}
 });
