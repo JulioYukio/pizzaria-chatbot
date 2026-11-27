@@ -16,14 +16,10 @@ try {
 }
 
 const bot = new Bot({cacheFile:path.join(__dirname,"..","data","whatsapp-cache.json")});
-// A identificação mostrada nos dispositivos conectados acompanha o sistema do computador.
-// Não é o nome físico do computador; o WhatsApp pode manter o nome da sessão anterior.
-const nomesSistema = {win32:"Windows", darwin:"macOS", linux:"Linux"};
-const sistema = nomesSistema[process.platform] || "Computador";
+// Não force nomes de dispositivo/navegador: algumas versões de WhatsApp Web
+// retornam informações nulas ao configurar essa identificação.
 const client = new Client({
-  authStrategy: new LocalAuth({clientId:"pizzaria-demo"}),
-  deviceName: sistema,
-  browserName: "Chrome"
+  authStrategy: new LocalAuth({clientId:"pizzaria-demo"})
 });
 
 client.on("qr", codigo => {

@@ -189,3 +189,10 @@ test("categoria Bebidas mantém catálogo em texto e não envia PDF",async()=>{
  await a.enviar("1002 4");
  assert.match(a.respostas.at(-1),/Adicionado: 4x Coca-Cola Zero 2L/);
 });
+
+test("cliente WhatsApp não força deviceName ou browserName",()=>{
+ const src=fs.readFileSync(path.join(__dirname,"../src/whatsapp.js"),"utf8");
+ assert.doesNotMatch(src,/deviceName\s*:/);
+ assert.doesNotMatch(src,/browserName\s*:/);
+ assert.match(src,/authStrategy:\s*new LocalAuth/);
+});

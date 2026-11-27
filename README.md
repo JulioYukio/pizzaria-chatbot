@@ -216,15 +216,17 @@ e **continua o atendimento por texto**, permitindo escolher a categoria e pedir
 normalmente. Se houver erro na resposta com citação, o bot tenta responder
 como mensagem simples. O projeto ainda precisa ser testado numa conexão real.
 
-### Nome do dispositivo conectado
+### Compatibilidade na inicialização do WhatsApp
 
-O `src/whatsapp.js` usa `deviceName` conforme o sistema operacional que
-executa o Node.js: `Windows`, `macOS` ou `Linux`, com navegador `Chrome`.
-Isso **não muda o sistema operacional real** nem necessariamente renomeia uma
-sessão **já vinculada**. Se a identificação antiga continuar aparecendo,
-confirme qual sessão pertence ao bot, encerre o programa com **Ctrl+C**,
-desconecte **apenas essa sessão** em WhatsApp → Dispositivos conectados,
-e inicie novamente `npm.cmd run whatsapp` para escanear o novo QR Code.
+Não definimos `deviceName` nem `browserName` nas opções do cliente do
+`whatsapp-web.js`. Em algumas versões, essa personalização pode falhar na
+inicialização com `TypeError: Cannot read properties of null (reading 'info')`
+dentro de `Client.setDeviceName`. O nome do dispositivo conectado será
+determinado pelo WhatsApp Web. A sessão `LocalAuth` permanece preservada.
+
+Depois de atualizar com `git pull origin main`, execute `npm.cmd test` e
+`npm.cmd run whatsapp`. Um aviso sobre `punycode` descontinuado, isoladamente,
+não impede a conexão. Se a falha persistir, copie a mensagem completa do erro.
 
 ### Personalizar as mensagens de atendimento
 
